@@ -91,7 +91,6 @@ namespace Tmpl8
 
 		/* - rendering - */
 		backdrop.Draw(screen, 0, 0);
-		DrawMap
 
 		if (screen->Visibility(playerX, playerY, playerX + playerWidth, playerY + playerHeight, viewX1, viewY1, viewX2, viewY2))
 			playerSprite.Draw(screen, playerX, playerY);
