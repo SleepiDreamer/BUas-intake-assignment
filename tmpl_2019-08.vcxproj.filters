@@ -12,6 +12,8 @@
     <ClCompile Include="map.cpp">
       <Filter>template code</Filter>
     </ClCompile>
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="surface.h">
@@ -25,6 +27,8 @@
     </ClInclude>
     <ClInclude Include="game.h" />
     <ClInclude Include="util.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

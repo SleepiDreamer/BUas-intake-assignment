@@ -9,6 +9,7 @@ namespace Tmpl8
 		return (int)(number / pow(10, n)) % 10;
 	}
 
+
 	std::tuple<int, int> IndexToXY(const int index, const int width)
 	{
 		return { index % width, floor(index / width) };

@@ -1,11 +1,10 @@
 #include "game.h"
 #include "surface.h"
 
-#include <cstdio> //printf
 #include <iostream>
 #include <windows.h>
 #include <algorithm>
-
+#include "map.h"
  
 
 namespace Tmpl8
@@ -91,6 +90,7 @@ namespace Tmpl8
 
 		/* - rendering - */
 		backdrop.Draw(screen, 0, 0);
+		
 
 		if (screen->Visibility(playerX, playerY, playerX + playerWidth, playerY + playerHeight, viewX1, viewY1, viewX2, viewY2))
 			playerSprite.Draw(screen, playerX, playerY);
@@ -102,9 +102,7 @@ namespace Tmpl8
 
 		screen->DrawView(viewX1, viewY1, viewX2, viewY2, 0x000000);
 		screen->Box(viewX1, viewY1, viewX2, viewY2, 0xffffff);
-
-
-
+		//map.RenderMap(screen, 0, 0);
 
 		// debug: draw box around ball with colors
 		if (screen->Visibility(playerX, playerY, playerX + playerWidth, playerY + playerHeight, viewX1, viewY1, viewX2, viewY2) == 0)
