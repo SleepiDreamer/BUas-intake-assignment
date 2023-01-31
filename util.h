@@ -20,4 +20,29 @@ namespace Tmpl8
 	 * \return the sprite's entryX and entryY coordinate in the spritesheet as a tuple of two integers
 	 */
 	std::tuple<int, int> IndexToXY(const int index, const int width);
+
+	/**
+	 * \return the distance between p1 and p2 (float)
+	 */
+	float distanceBetween(const float x1, const float y1, const float x2, const float y2);
+
+	inline float distanceBetween(const vec2& pos1, const vec2& pos2)
+	{
+		return distanceBetween(pos1.x, pos1.y, pos2.x, pos2.y);
+	}
+
+	/**
+	 * \brief returns the direction (in radians) someone at p1 should point towards if it were to look at p2
+	 * \param x1  your x
+	 * \param y1  your y
+	 * \param x2  target x
+	 * \param y2  target y
+	 * \return 
+	 */
+	float RotationBetweenPoints(const float x1, const float y1, const float x2, const float y2);
+
+	inline float RotationBetweenPoints(const vec2& pos1, const vec2& pos2)
+	{
+		return RotationBetweenPoints(pos1.x, pos1.y, pos2.x, pos2.y);
+	}
 }

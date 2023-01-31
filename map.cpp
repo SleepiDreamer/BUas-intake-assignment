@@ -10,7 +10,7 @@
 namespace Tmpl8
 {
 	
-	std::vector<std::vector<int>> map
+	std::vector<std::vector<int>> map // TODO change to vec2
 	{
 		{00, 00, 00, 00, 00, 00, 00, 00, 00},
 		{00, 00, 11, 11, 11, 11, 11, 11, 00},
@@ -22,7 +22,7 @@ namespace Tmpl8
 
 
 
-	std::tuple<int, int, int, bool> Map::TileInfo(const int tx, const int ty)
+	std::tuple<int, int, int, bool> Map::TileInfo(const int tx, const int ty) // TODO change to vec2
 	{
 		int tx_r = floor(tx / mapWidth);
 		int ty_r = floor(ty / mapHeight);

@@ -2,6 +2,7 @@
 // IGAD/BUAS(NHTV)/UU - Jacco Bikker - 2006-2020
 
 #pragma once
+#include "template.h"
 
 namespace Tmpl8 {
 
@@ -63,7 +64,9 @@ public:
 	void BlendCopyTo( Surface* a_Dst, int a_X, int a_Y );
 	void ScaleColor( unsigned int a_Scale );
 	void Box( int x1, int y1, int x2, int y2, Pixel color );
+	void Box(vec2 pos1, vec2 pos2, int c) { Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), c); }
 	void Bar( int x1, int y1, int x2, int y2, Pixel color );
+	void Circle(int x, int y, int r, Pixel c);
 	void Resize( Surface* a_Orig );
 	void DrawView(int x1, int y1, int x2, int y2, Pixel color);
 	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2);

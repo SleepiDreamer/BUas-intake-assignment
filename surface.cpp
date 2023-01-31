@@ -208,6 +208,16 @@ namespace Tmpl8 {
 				
 	}
 
+	void Surface::Circle( int x, int y, int r, Pixel c)
+	{
+		float i = 0;
+		float precision = 1/(3 * r);
+		for (float i = 0; i < 2 * PI; i += precision)
+		{
+			Surface::Plot(x + cos(i), y + sin(i), c);
+		}
+	}
+
 	void Surface::DrawView(int x1, int y1, int x2, int y2, Pixel color)
 	{
 		Bar(x1, 0, x2, y1, color);
