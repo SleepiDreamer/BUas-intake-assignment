@@ -1,19 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="game.cpp" />
     <ClCompile Include="surface.cpp">
       <Filter>template code</Filter>
     </ClCompile>
     <ClCompile Include="template.cpp">
       <Filter>template code</Filter>
     </ClCompile>
-    <ClCompile Include="util.cpp" />
-    <ClCompile Include="map.cpp">
-      <Filter>template code</Filter>
+    <ClCompile Include="player.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="bullet.cpp" />
-    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="util.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="bulletManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="poolManager.cpp" />
+    <ClCompile Include="enemy.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="surface.h">
@@ -22,17 +40,47 @@
     <ClInclude Include="template.h">
       <Filter>template code</Filter>
     </ClInclude>
-    <ClInclude Include="map.h">
-      <Filter>template code</Filter>
+    <ClInclude Include="player.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="game.h" />
-    <ClInclude Include="util.h" />
-    <ClInclude Include="bullet.h" />
-    <ClInclude Include="enemy.h" />
+    <ClInclude Include="util.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="bulletManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="poolManager.h" />
+    <ClInclude Include="enemyManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
       <UniqueIdentifier>{bf32dd6e-4be7-4889-8ac6-49e7ee163c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4365be0a-7329-4f80-8f94-120f24112432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{de3c8812-0543-44e8-8330-39093b78abf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Old">
+      <UniqueIdentifier>{3b26d118-8dbe-47a8-a907-e6bbd049bc20}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

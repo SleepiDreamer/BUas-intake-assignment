@@ -7,7 +7,7 @@ namespace Tmpl8
 {
 	int nthDigit(const int number, const int n)
 	{
-		return (int)(number / pow(10, n)) % 10;
+		return static_cast<int>(number / pow(10, n)) % 10;
 	}
 
 	std::tuple<int, int> IndexToXY(const int index, const int width)
@@ -31,4 +31,13 @@ namespace Tmpl8
 		return 1.5 * PI;
 	}
 
+	float calcDir(const vec2& _vel)
+	{
+		return atan2(_vel.y, _vel.x);
+	}
+
+	float calcSpeed(const vec2& _vel)
+	{
+		return sqrt(_vel.x * _vel.x + _vel.y * _vel.y);
+	}
 }

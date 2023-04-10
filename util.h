@@ -41,6 +41,10 @@ namespace Tmpl8
 	 */
 	float RotationBetweenPoints(const float x1, const float y1, const float x2, const float y2);
 
+	const vec2& calcDir(const vec2& _vel);
+
+	float calcSpeed(const vec2& _vel);
+
 	inline float RotationBetweenPoints(const vec2& pos1, const vec2& pos2)
 	{
 		return RotationBetweenPoints(pos1.x, pos1.y, pos2.x, pos2.y);

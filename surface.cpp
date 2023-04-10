@@ -116,6 +116,39 @@ namespace Tmpl8 {
 		}
 	}
 
+	void Surface::PrintScaled(char* a_String, int x1, int y1, int xscale, int yscale, Pixel color)
+	{
+		if (!fontInitialized)
+		{
+			InitCharset();
+			fontInitialized = true;
+		}
+		Pixel* t = m_Buffer + x1 + y1 * m_Pitch; // t is the pixel to begin with
+		for (int i = 0; i < (int)(strlen(a_String)); i++, t += (6 * xscale)) // go to the next letter and move to the right
+		{
+			long pos = 0;
+			if ((a_String[i] >= 'A') && (a_String[i] <= 'Z')) pos = s_Transl[(unsigned short)(a_String[i] - ('A' - 'a'))];
+			else pos = s_Transl[(unsigned short)a_String[i]];
+			Pixel* a = t;
+			char* c = (char*)s_Font[pos];
+			for (int v = 0; v < 5 * xscale; v += xscale, c += 1, a += m_Pitch * yscale) 
+			{
+				for (int h = 0; h < 5 * xscale; h += xscale)
+				{
+					if (*c++ == 'o')
+					{
+						for (int x = 0; x < yscale; x++)
+						{
+							for (int y = 0; y < xscale; y++) {
+								*(a + h + y + m_Pitch * x) = color;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void Surface::Resize( Surface* a_Orig )
 	{
 		Pixel* src = a_Orig->GetBuffer(), *dst = m_Buffer;
@@ -208,13 +241,14 @@ namespace Tmpl8 {
 				
 	}
 
-	void Surface::Circle( int x, int y, int r, Pixel c)
+	void Surface::Circle( vec2 _pos, int r, Pixel c )
 	{
 		float i = 0;
-		float precision = 1/(3 * r);
+		float steps = 360;
+		float precision = 2 * PI / steps;
 		for (float i = 0; i < 2 * PI; i += precision)
 		{
-			Surface::Plot(x + cos(i), y + sin(i), c);
+			Surface::Plot(_pos.x + cos(i) * r, _pos.y + sin(i) * r, c);
 		}
 	}
 
@@ -403,7 +437,8 @@ namespace Tmpl8 {
 	}
 
 
-
+	// Taken from Erik (RedCotillion#4658) on Discord (06/03/2023)
+	// https://discord.com/channels/515453022097244160/1047632806647451748/1065330492200722464
 	void Sprite::Draw( Surface* a_Target, int a_X, int a_Y )
 	{
 		if ((a_X < -m_Width) || (a_X > (a_Target->GetWidth() + m_Width))) return;
@@ -463,15 +498,23 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Sprite::DrawScaled( int a_X, int a_Y, int a_Width, int a_Height, Surface* a_Target )
+	// Obtained from Lynn on discord (yeet#2424)
+	void Sprite::DrawScaled(int a_X, int a_Y, int a_Width, int a_Height, Surface* a_Target, bool is_flipped)
 	{
+		// center around a_X, a_Y
+		int a_X2 = a_X - a_Width / 2;
+		int a_Y2 = a_Y - a_Height / 2;
+
 		if ((a_Width == 0) || (a_Height == 0)) return;
-		for ( int x = 0; x < a_Width; x++ ) for ( int y = 0; y < a_Height; y++ )
+		for (int x = 0; x < a_Width; x++) for (int y = 0; y < a_Height; y++)
 		{
+			/* Now doesn't try to "draw" outside of the window */
+			if (a_X2 + x < 0 || a_X2 + x > ScreenWidth - 1 || a_Y2 + y < 0 || a_Y2 + y > ScreenHeight - 1) { break; }
+
 			int u = (int)((float)x * ((float)m_Width / (float)a_Width));
 			int v = (int)((float)y * ((float)m_Height / (float)a_Height));
 			Pixel color = GetBuffer()[u + v * m_Pitch];
-			if (color & 0xffffff) a_Target->GetBuffer()[a_X + x + ((a_Y + y) * a_Target->GetPitch())] = color;
+			if (color & 0xffffff) a_Target->GetBuffer()[a_X2 + x + ((a_Y2 + y) * a_Target->GetPitch())] = color;
 		}
 	}
 

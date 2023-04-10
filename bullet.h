@@ -1,78 +1,40 @@
 #pragma once
-#pragma once
 #include "surface.h"
 #include "template.h"
-#include "util.h"
-#include <cmath>
-//#include <cstdio> //printf
-#include <iostream>
+#include "entity.h"
+#include <utility>
 #include <vector>
 
-#include "enemy.h"
-
-
 namespace Tmpl8 {
-
-	class Surface;
-
-	class Bullet
+	class Bullet : public Entity
 	{
-	public:
-
-		/**
-		 * \brief
-		 * \param _x  initial x coordinate
-		 * \param _y  initial y coordinate
-		 * \param _rotation  initial rotation in radians
-		 * \param _speed  initial speed in px/s
-		 * \param _damage  damage
-		 * \param _penetration  how many times the bullet can go through an enemy
-		 * \param _sprite  bullet's sprite
-		 */
-		Bullet(Surface* _screen, float _x, float _y, float _rotation, vec2 _speed, float _damage, int _penetration, Sprite* _sprite) :
-			m_sprite(_sprite)
-		{
-			m_screen = _screen;
-			m_pos = { _x, _y };
-			m_dir = vec2{cos(_rotation), sin(_rotation)};
-			m_speed = _speed;
-			m_damage = _damage;
-			m_penetration = _penetration;
-		}
-		Bullet(Bullet&&) = default;
-		~Bullet()
-		{
-			int i = 0;
-		}
-
-
-		void SetPos(const vec2& newPos);
-		const vec2& GetPos() const;
-
-		void SetDir(const vec2& newPos);
-		const vec2& GetDir() const;
-
-		void SetSpeed(const vec2& newPos);
-		const vec2& GetSpeed() const;
-
-
-		void Update(float deltaTime);
-
-		void Render(Surface* gameScreen);
-
-		bool Collision(const Enemy& enemy);
-
-		void Delete();
-
-		//void OnHit(const Enemy& enemy);
-
-
 	private:
-		Surface* m_screen;
-		float m_damage;
-		int m_penetration;
-		vec2 m_pos, m_dir, m_speed;
-		Sprite* m_sprite;
-	};
+		float lifetime = 3.0f;
+		bool active;
+		float scale = 1.0f; // factor to multiply the sprite size with
+		int id;
+	public:
+		
+		void setLifetime(float _lifetime) { lifetime = _lifetime; }
+		float getLifetime() const { return lifetime; }
+		void setActive(bool _active) { active = _active; }
+		bool getActive() const { return active; }
+		void setId(int _id) { id = _id; }
+		int getId() const { return id; }
 
-};
+		Bullet(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite, int _id) :
+			Entity(_pos, _screen, std::move(_sprite))
+		{
+			id = _id;
+			vel = { 0, 0 };
+			size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale }; // size of the sprite in pixels
+			damage = 10.0f;
+			active = false;
+		}
+
+		void update(float _dt);
+
+		
+		void render(Surface* _screen);
+	};
+}
