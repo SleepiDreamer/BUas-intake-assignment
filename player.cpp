@@ -19,7 +19,7 @@ namespace Tmpl8
 			vel.x = std::clamp(vel.x - acceleration * _dt, -velMax, velMax);
 			isRunning = true;
 		}
-		if (GetAsyncKeyState(VK_UP))
+		/*if (GetAsyncKeyState(VK_UP))
 		{
 			vel.y = std::clamp(vel.y - acceleration * _dt, -velMax, velMax);
 			isRunning = true;
@@ -28,31 +28,34 @@ namespace Tmpl8
 		{
 			vel.y = std::clamp(vel.y + acceleration * _dt, -velMax, velMax);
 			isRunning = true;
-		}
+		}*/
 		doAnimation(_dt);
 
 		// slow down when appropriate
 		if (GetAsyncKeyState(VK_RIGHT) == GetAsyncKeyState(VK_LEFT) || (GetAsyncKeyState(VK_RIGHT) && vel.x < 0) || (GetAsyncKeyState(VK_LEFT) && vel.x > 0)) // slow down
-			vel.x = vel.x -= (vel.x * 10.0f) * (_dt);
+			vel.x -= (vel.x * 10.0f) * (_dt);
 		if (GetAsyncKeyState(VK_UP) == GetAsyncKeyState(VK_DOWN) || (GetAsyncKeyState(VK_UP) && vel.y > 0) || (GetAsyncKeyState(VK_DOWN) && vel.y < 0))
-			vel.y = vel.y -= (vel.y * 10.0f) * (_dt);
+			vel.y -= (vel.y * 10.0f) * (_dt);
 
 		// move player
 		pos.x += vel.x * _dt;
 		pos.y += vel.y * _dt;
 
 		// screen boundary collisions
-		if (this->getTopLeft().x < 0)
+		float moveWidth = 800.0f;
+		float leftBound = (ScreenWidth - moveWidth) / 2;
+		float rightBound = 800 + leftBound;
+		if (pos.x < leftBound)
 		{
 			vel.x = 0;
-			pos.x = size.x * scale / 2;
+			pos.x = leftBound;
 		}
-		if (this->getBottomRight().x > ScreenWidth)
+		if (pos.x > rightBound)
 		{
 			vel.x = 0;
-			pos.x = ScreenWidth - (size.x * scale / 2);
+			pos.x = rightBound;
 		}
-		if (this->getTopLeft().y < 0)
+		/*if (this->getTopLeft().y < 0)
 		{
 			vel.y = 0;
 			pos.y = size.y * scale / 2;
@@ -61,7 +64,7 @@ namespace Tmpl8
 		{
 			vel.y = 0;
 			pos.y = ScreenHeight - (size.y * scale / 2);
-		}
+		}*/
 
 
 		lastShot += _dt;

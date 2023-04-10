@@ -13,8 +13,8 @@ namespace Tmpl8
 	{
 		screen = surface;
 		
-		auto playerSprite = std::make_unique<Sprite>(new Surface("assets/Character cropped/spritesheet.png"), 12);
-		player = new Player({ 200, 200 }, screen, std::move(playerSprite));
+		auto playerSprite = std::make_unique<Sprite>(new Surface("assets/ball.png"), 1);
+		player = new Player({ 500, 525 }, screen, std::move(playerSprite));
 		auto enemySprite = std::make_unique<Sprite>(new Surface("assets/ctankbase.tga"), 16);
 		//enemy = new Enemy({500, 500}, screen, std::move(enemySprite));
 	}
@@ -63,7 +63,7 @@ namespace Tmpl8
 			// ---*--- BULLETS ---*---
 			if (mouseLeftDown && player->canShoot())
 			{
-				bulletPool.enable(player->getPos(), player->getDir() * 1000.0f , 1.0f, 10.0f);
+				bulletPool.enable(player->getPos(), player->getDir() * 2000.0f , 1.0f, 10.0f);
 				player->resetShotTimer();
 			}
 			bulletPool.update(player->getPos(), dt);
@@ -79,14 +79,15 @@ namespace Tmpl8
 			}
 
 			// ---*--- RENDERING ---*---
-			backdrop->Draw(screen, 0, 0); // RENDER THIS FIRST!
+			screen->Clear(0);
+			//backdropSprite->Draw(screen, 0, 0); // RENDER THIS FIRST!
 			bulletPool.render(screen);
 			enemyPool.render(screen);
+			screen->Line(leftBound, 525, rightBound, 525, 0xffffff);
 			player->render();
 		}
-		else
-		{
-			//screen->Line(ScreenWidth / 2, 0, ScreenWidth / 2, ScreenHeight, 0xffffff);
+		else 
+		{ // menu screen
 			screen->PrintScaled("MR. BOUNCE", 350, 40, 10, 10, 0xffffff); // center text
 			screen->PrintScaled("PLAY", 570, 300, 6, 6, 0xffffff);
 			screen->PrintScaled("QUIT", 570, 400, 6, 6, 0xffffff);

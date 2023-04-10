@@ -36,8 +36,9 @@ namespace Tmpl8
             }
             i++;
         }
-        std::swap(pool[current], pool[n_active - 1]);
-        n_active--;
+        pool[current]->reset();
+        pool[current]->setPos({ -100, -100 });
+        std::swap(pool[current], pool[--n_active]);
     }
     
     void BulletManager::render(Surface* _screen)
@@ -45,6 +46,7 @@ namespace Tmpl8
         for (int i = 0; i < n_active; i++)
         {
             pool[i]->render(_screen);
+            _screen->Circle(pool[i]->getPos(), 3, 0x00ff00);
         }
     }
 
@@ -53,11 +55,14 @@ namespace Tmpl8
         for (int i = 0; i < n_active; i++)
         {
             Bullet* elm = (pool[i]);
-            elm->update(_dt);
-            if (elm->getPos().x < 0 || elm->getPos().x > ScreenWidth || elm->getPos().y < 0 || elm->getPos().y > ScreenHeight)
+            if (elm->update(_dt)) // calls update and checks if bullet should be disabled (return type bool)
+            {
+	            disable(elm->getId());
+            }
+            /*if (elm->getPos().x < 0 || elm->getPos().x > ScreenWidth || elm->getPos().y < 0 || elm->getPos().y > ScreenHeight)
             {
                 disable(elm->getId());
-            }
+            }*/
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Tmpl8 {
 	public:
 		void setPos( vec2 _pos ) { pos = _pos; }
 		vec2 getPos() { return pos; }
-		vec2 getTopLeft() { return { pos.x - (size.x / 2), pos.y - (size.y / 2) }; }
+		virtual vec2 getTopLeft() { return { pos.x - (size.x / 2), pos.y - (size.y / 2) }; }
 		virtual vec2 getBottomRight() { return { pos.x + (size.x / 2), pos.y + (size.y / 2) }; }
 		void setVel( vec2 _vel ) { vel = _vel; }
 		vec2 getVel() { return vel; }

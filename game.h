@@ -52,12 +52,15 @@ namespace Tmpl8
 		Surface* screen;
 
 		Player* player;
+		float moveWidth = 800.0f;
+		float leftBound = (ScreenWidth - moveWidth) / 2;
+		float rightBound = 800 + leftBound;
 
 		vec2 mousePos;
 		bool mouseLeftDown = false;
 
 		bool run = false;
-		Sprite* backdrop = new Sprite(new Surface("assets/backdrop.jpg"), 1);
+		Sprite* backdropSprite = new Sprite(new Surface("assets/backdrop.jpg"), 1);
 
 		//PoolManager<Bullet, 300> bulletPool;
 		BulletManager bulletPool = BulletManager(300);

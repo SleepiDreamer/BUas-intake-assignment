@@ -149,6 +149,16 @@ namespace Tmpl8 {
 		}
 	}
 
+	void Surface::Trajectory(float start_x, float start_y, float v, float g, float angle)
+	{
+		Pixel* t = m_Buffer;
+		for (int i = 0; i < ScreenWidth; i++)
+		{
+			float height = 0;
+			//*(m_Buffer + i + m_Pitch * height) = 0x00FF00;
+		}
+	}
+
 	void Surface::Resize( Surface* a_Orig )
 	{
 		Pixel* src = a_Orig->GetBuffer(), *dst = m_Buffer;
