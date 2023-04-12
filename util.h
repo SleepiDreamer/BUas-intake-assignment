@@ -25,7 +25,6 @@ namespace Tmpl8
 	 * \return the distance between p1 and p2 (float)
 	 */
 	float distanceBetween(const float x1, const float y1, const float x2, const float y2);
-
 	inline float distanceBetween(const vec2& pos1, const vec2& pos2)
 	{
 		return distanceBetween(pos1.x, pos1.y, pos2.x, pos2.y);
@@ -49,4 +48,14 @@ namespace Tmpl8
 	{
 		return RotationBetweenPoints(pos1.x, pos1.y, pos2.x, pos2.y);
 	}
+
+	vec2 reflectVector(vec2& _vel, const vec2& _normal);
+
+	float vec2ToAngle(const vec2& _vel);
+
+	int randint(const int _min, const int _max, float _time);
+
+	float randfloat(const float _min, const float _max);
+
+	bool insideScreen(vec2 _pos);
 }

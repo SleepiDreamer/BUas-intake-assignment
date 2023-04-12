@@ -17,7 +17,7 @@ namespace Tmpl8 {
 		float acceleration = 1500.0f;
 		float lastShot = 0;
 		float shotDelay = 0.05f;
-		float scale = 0.4f; // factor to multiply the sprite size with
+		float scale = 1.0f; // factor to multiply the sprite size with
 		int animationMin = 0; // idle: 0, walk: 6
 		int animationMax = 5; // idle: 5, walk: 12
 		float animationFrameDt = 0.0f;
@@ -37,7 +37,7 @@ namespace Tmpl8 {
 		Player(vec2 _pos, Surface* _screen, std::unique_ptr<Sprite> _sprite) :
 			Entity(_pos, _screen, std::move(_sprite))
 		{
-			vel = { 0, 0 };
+			vel = { -300, 100 };
 			size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale};
 			damage = 0;
 		}

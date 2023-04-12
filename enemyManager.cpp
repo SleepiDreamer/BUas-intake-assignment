@@ -1,5 +1,4 @@
 #include "enemyManager.h"
-#include "bullet.h"
 #include "enemy.h"
 
 namespace Tmpl8

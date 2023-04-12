@@ -45,6 +45,11 @@ namespace Tmpl8
 		void KeyUp(int key) { /* implement if you want to handle keys */ }
 		void KeyDown(int key) { /* implement if you want to handle keys */ }
 
+		void playButton(vec2 _pos1, vec2 _pos2);
+		void quitButton(vec2 _pos1, vec2 _pos2);
+		void onStart();
+		void spawnEnemy();
+
 		Game(Surface* surface);
 		~Game();
 
@@ -56,7 +61,11 @@ namespace Tmpl8
 		vec2 mousePos;
 		bool mouseLeftDown = false;
 
-		bool run = false;
+		int frame = 0;
+		float time = 0;
+		float enemySpawnTimer = 0;
+		float enemySpawnDelay = 0.6f;
+		bool gameRunning = false;
 		Sprite* backdrop = new Sprite(new Surface("assets/backdrop.jpg"), 1);
 
 		//PoolManager<Bullet, 300> bulletPool;
