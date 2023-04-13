@@ -239,6 +239,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletManager.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="colours.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyManager.h" />
     <ClInclude Include="entity.h" />

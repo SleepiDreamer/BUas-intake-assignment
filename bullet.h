@@ -9,14 +9,10 @@ namespace Tmpl8 {
 	class Bullet : public Entity
 	{
 	private:
-		float lifetime = 3.0f;
 		bool active;
 		float scale = 1.0f; // factor to multiply the sprite size with
 		int id;
 	public:
-		
-		void setLifetime(float _lifetime) { lifetime = _lifetime; }
-		float getLifetime() const { return lifetime; }
 		void setActive(bool _active) { active = _active; }
 		bool getActive() const { return active; }
 		void setId(int _id) { id = _id; }
@@ -27,7 +23,8 @@ namespace Tmpl8 {
 		{
 			id = _id;
 			vel = { 0, 0 };
-			size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale }; // size of the sprite in pixels
+			if (sprite != nullptr) size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale }; // size of the sprite in pixels
+			else size = { 5, 5 };
 			damage = 10.0f;
 			active = false;
 		}

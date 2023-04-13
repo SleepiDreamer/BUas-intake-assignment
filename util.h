@@ -57,5 +57,15 @@ namespace Tmpl8
 
 	float randfloat(const float _min, const float _max);
 
+	float randfloat2(const float _min, const float _max);
+
 	bool insideScreen(vec2 _pos);
+
+	char* intToChar(int _int);
+
+	char* floatToChar(float _float);
+
+	bool insideRectangle(vec2 _point, vec2 _pos1, vec2 _pos2);
+
+	float roundNumber(float _number, int _dec);
 }

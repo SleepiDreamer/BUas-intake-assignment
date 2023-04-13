@@ -68,6 +68,9 @@
     <ClInclude Include="enemyManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="colours.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

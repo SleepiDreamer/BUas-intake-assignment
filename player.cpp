@@ -1,9 +1,6 @@
 #include "player.h"
 #include "util.h"
 
-#include <windows.h>
-#include <algorithm>
-
 namespace Tmpl8
 {
 	void Player::update(float _dt)
@@ -12,36 +9,54 @@ namespace Tmpl8
 		pos += vel * _dt;
 
 		// screen boundary collisions
-		if (this->getTopLeft().x < 0) // LEFT
+		if (this->getTopLeft().x < 100) // LEFT
 		{
-			pos.x = size.x * scale / 2;
+			pos.x = 100 + size.x * scale / 2;
 			vel = reflectVector(vel, { 1.0f, 0.0f });
 		}
-		if (this->getBottomRight().x > ScreenWidth) // RIGHT
+		if (this->getBottomRight().x > ScreenWidth - 100) // RIGHT
 		{
-			pos.x = ScreenWidth - (size.x * scale / 2);
+			pos.x = -100 + ScreenWidth - (size.x * scale / 2);
 			vel = reflectVector(vel, { -1.0f, 0.0f });
 		}
-		if (this->getTopLeft().y < 0) // TOP
+		if (this->getTopLeft().y < 0 + 100) // TOP
 		{
-			pos.y = size.y * scale / 2;
+			pos.y = 100 + size.y * scale / 2;
 			vel = reflectVector(vel, { 0.0f, 1.0f });
 		}
-		if (this->getBottomRight().y > ScreenHeight) // BOTTOM
+		if (this->getBottomRight().y > ScreenHeight - 100) // BOTTOM
 		{
-			pos.y = ScreenHeight - (size.y * scale / 2);
+			pos.y = -100 + ScreenHeight - (size.y * scale / 2);
 			vel = reflectVector(vel, { 0.0f, -1.0f });
 		}
 
 		float angle = vec2ToAngle(vel);
 
 		lastShot += _dt;
+		invincibility -= _dt;
+		if (invincibility < 0) invincibility = 0;
 	}
 
-	void Player::render()
+	bool Player::playerDamaged()
 	{
-		sprite->SetFrame(frame);
-		sprite->DrawScaled(static_cast<int>(pos.x), static_cast<int>(pos.y), size.x * scale, size.y * scale, screen, false);
+		hp -= 1;
+		if (hp == 0.0f)
+		{
+			return true;
+		}
+		invincibility = 2.0f;
+		return false;
+	}
+
+	void Player::render() const
+	{
+		// TODO: flash player when damaged (invincibility > 0)
+		//sprite->DrawScaled(static_cast<int>(pos.x), static_cast<int>(pos.y), size.x * scale, size.y * scale, screen, false);
+		if (fmod(invincibility, 0.5) < 0.25)
+		{
+			screen->CircleFull(pos, 0, static_cast<int>(size.x / 2), 0x64b4ff);
+			screen->CircleFull(pos, 20, 25, 0x5df5ff);
+		}
 	}
 };
 

@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "bullet.h"
+#include "player.h"
 
 namespace Tmpl8 {
 	class EnemyManager
@@ -19,12 +20,16 @@ namespace Tmpl8 {
 		void init(Surface* _screen, std::shared_ptr<Sprite> _sprite);
 		void enable(vec2 _pos, vec2 _vel, float _scale, float _damage);
 		void disable(int id);
+		int getActiveEnemies() { return n_active; }
+		int getSize() { return size; }
 
 		std::vector<Enemy*> getPool() { return pool; }
 
 		void render(Surface* _screen);
 		void update(vec2 _playerPos, float _dt);
-		bool collisionCheck(Bullet* _bullet);
+		void clear();
+		bool bulletCollisionCheck(Bullet* _bullet);
+		bool playerCollisionCheck(Player* _player);
 
 		EnemyManager(int _size)
 		{

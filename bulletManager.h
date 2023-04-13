@@ -17,6 +17,7 @@ namespace Tmpl8 {
 		void enable(vec2 _pos, vec2 _vel, float _scale, float _damage);
 		void disable(int id);
 		int getActiveBullets() { return n_active; }
+		int getSize() { return size;  }
 
 		std::vector<Bullet*> getPool() { return pool; }
 

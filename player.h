@@ -11,41 +11,41 @@ namespace Tmpl8 {
 	{
 	private:
 		int weapon = 0;
-		float hp = 100;
-
+		float maxHp = 3.0f;
+		float hp = maxHp;
+		float invincibility = 0.0f;
 		float velMax = 450.0f;
 		float acceleration = 1500.0f;
-		float lastShot = 0;
+		float lastShot = 0.0f;
 		float shotDelay = 0.05f;
 		float scale = 1.0f; // factor to multiply the sprite size with
-		int animationMin = 0; // idle: 0, walk: 6
-		int animationMax = 5; // idle: 5, walk: 12
-		float animationFrameDt = 0.0f;
 		bool isRunning = false;
 
 	public:
-		vec2 getTopLeft() { return { pos.x - (size.x * scale / 2), pos.y - (size.y * scale / 2) }; }
-		vec2 getBottomRight() { return { pos.x + (size.x * scale / 2), pos.y + (size.y * scale / 2) }; }
+		vec2 getTopLeft() override { return { pos.x - (size.x * scale / 2), pos.y - (size.y * scale / 2) }; }
+		vec2 getBottomRight() override { return { pos.x + (size.x * scale / 2), pos.y + (size.y * scale / 2) }; }
 		void setWeapon(int _weapon) { weapon = _weapon; }
 		int getWeapon() const { return weapon; }
 		void setHp(float _hp) { hp = _hp; }
 		float getHp() const { return hp; }
+		float getMaxHp() const { return maxHp; }
 		bool canShoot() const { return (lastShot > shotDelay); }
 		void resetShotTimer() { lastShot = 0; }
-		
+		void setInvincibility(float _invincibility) { invincibility	= _invincibility; }
+		float getInvincibility() const { return invincibility; }
+		bool playerDamaged();
 
 		Player(vec2 _pos, Surface* _screen, std::unique_ptr<Sprite> _sprite) :
 			Entity(_pos, _screen, std::move(_sprite))
 		{
 			vel = { -300, 100 };
-			size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale};
+			if (sprite != nullptr) size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale };
+			else size = { 50, 50 };
 			damage = 0;
 		}
 
-		void doAnimation(float _dt);
-
 		void update(float _dt);
 
-		void render();
+		void render() const override;
 	};
 }

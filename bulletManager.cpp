@@ -15,29 +15,30 @@ namespace Tmpl8
 
     void BulletManager::enable(vec2 _pos, vec2 _vel, float _scale, float _damage)
     {
-        Bullet* element = pool[n_active];
+        Bullet* element = pool[n_active++];
         element->setActive(true);
         element->setPos(_pos);
         element->setVel(_vel);
         element->setSize(_scale);
         element->setDamage(_damage);
-        n_active++;
     }
 
     void BulletManager::disable(int _id)
     {
         int current = 0;
         int i = 0;
-        for (Bullet* element : pool)
+        for (Bullet* bullet : pool)
         {
-            if (element->getId() == _id)
+            if (bullet->getId() == _id)
             {
                 current = i;
+                break;
             }
             i++;
         }
-        std::swap(pool[current], pool[n_active - 1]);
-        n_active--;
+        if (current != n_active - 1) std::swap(pool[current], pool[n_active - 1]);
+        pool[n_active - 1]->setActive(false);
+    	n_active--;
     }
     
     void BulletManager::render(Surface* _screen)
@@ -60,4 +61,6 @@ namespace Tmpl8
             }
         }
     }
+
+    // TODO: implement clear() function
 }

@@ -1,5 +1,6 @@
 #include "enemy.h"
 
+#include "colours.h"
 #include "player.h"
 #include "util.h"
 
@@ -12,8 +13,9 @@ namespace Tmpl8
 
 	void Enemy::render(Surface* _screen)
 	{
-		sprite->SetFrame(frame);
-		vec2 midPos = { pos.x - sprite->GetWidth() / 2, pos.y - sprite->GetHeight() / 2 };
-		sprite->DrawScaled(this->getTopLeft().x, this->getTopLeft().y, sprite->GetWidth() * scale, sprite->GetHeight() * scale, _screen, false); // draw centered around point
+		//sprite->DrawScaled(this->getTopLeft().x, this->getTopLeft().y, sprite->GetWidth() * scale, sprite->GetHeight() * scale, _screen, false); // draw centered around point
+		srand(id);
+		int color = pastels[id % static_cast<int>(pastels.size())];
+		screen->CircleFull(pos, 0, 20, color);
 	}
 };

@@ -4,6 +4,7 @@
 #include <cmath>
 #include <time.h>
 #include <random>
+#include <string>
 
 namespace Tmpl8
 {
@@ -61,19 +62,53 @@ namespace Tmpl8
 		return atan2(_vel.y, _vel.x);
 	}
 
-	int randint(const int _min, const int _max, float _time)
+	int randint(const int _min, const int _max)
 	{
-		srand(static_cast<int>(_time));
-		return rand() % (_max - _min + 1) + _min;
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(_min, _max);
+		return dis(gen);
 	}
 
-	float randfloat(const float _min, const float _max)
+	float randfloat(const float _min, const float _max) // SHOULDNT USE, HAS SOME WEIRD BUGS WITH SEEDING
 	{
 		return _min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (_max - _min)));
+	}
+
+	float randfloat2(const float _min, const float _max)
+	{
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> dis(_min, _max);
+		return dis(gen);
 	}
 
 	bool insideScreen(vec2 _pos)
 	{
 		return _pos.x > 0 && _pos.x < ScreenWidth && _pos.y > 0 && _pos.y < ScreenHeight;
+	}
+
+	char* intToChar(int _int)
+	{
+		char* str = new char[20]; // allocate memory
+		sprintf(str, "%d", _int); // int -> string
+		return str;
+	}
+
+	char* floatToChar(float _float)
+	{
+		char* str = new char[20]; // allocate memory
+		sprintf(str, "%f", _float); // float -> string
+		return str;
+	}
+
+	bool insideRect(vec2 _point, vec2 _pos1, vec2 _pos2)
+	{
+		return _point.x > _pos1.x && _point.x < _pos2.x && _point.y > _pos1.y && _point.y < _pos2.y;
+	}
+
+	float roundNumber(float _number, int _dec)
+	{
+		return 0.0f;
 	}
 }
