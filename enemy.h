@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "surface.h"
 #include "entity.h"
 
@@ -9,13 +11,9 @@ namespace Tmpl8 {
 		float hp;
 		int id;
 		bool active;
-
 		float hitboxSize = 20.0f;
-		float speedMax = 450.0f;
-		float speedAccel = 2000.0f;
-		float lastShot = 0;
-		float shotDelay = 1.0f;
 		float scale = 1.0f;
+		std::vector<int> pastels = { 0xB2A4FF, 0xFFB4B4, 0xFFDEB4, 0xFDF7C3, 0xF7C8E0, 0xDFFFD8, 0xB4E4FF, 0x95BDFF };
 
 	public:
 		void setHP(float _hp) { hp = _hp; }
@@ -32,7 +30,8 @@ namespace Tmpl8 {
 			id = _id;
 			active = false;
 			vel = { 0, 0 };
-			size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale };
+			if (sprite != nullptr) size = { static_cast<float>(sprite->GetWidth()) * scale, static_cast<float>(sprite->GetHeight()) * scale };
+			else size = { 50, 50 };
 			damage = 0;
 			hp = 50;
 		}

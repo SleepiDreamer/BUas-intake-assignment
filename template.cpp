@@ -76,6 +76,7 @@ void timer::init()
 
 // Math Stuff
 // ----------------------------------------------------------------------------
+
 vec3 normalize( const vec3& v ) { return v.normalized(); }
 vec3 cross( const vec3& a, const vec3& b ) { return a.cross( b ); }
 float dot( const vec3& a, const vec3& b ) { return a.dot( b ); }

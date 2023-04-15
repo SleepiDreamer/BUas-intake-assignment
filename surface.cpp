@@ -6,6 +6,7 @@
 #include <cassert>
 #include <cstring>
 #include "FreeImage.h"
+#include "util.h"
 
 namespace Tmpl8 {
 
@@ -90,13 +91,19 @@ namespace Tmpl8 {
 		for ( int i = 0; i < s; i++ ) m_Buffer[i] = a_Color;
 	}
 
-	void Surface::Centre( char* a_String, int y1, Pixel color )
+	void Surface::Centre( const char* a_String, int y1, Pixel color )
 	{
 		int x = (m_Width - (int)strlen( a_String ) * 6) / 2;
 		Print( a_String, x, y1, color );
 	}
 
-	void Surface::Print( char* a_String, int x1, int y1, Pixel color )
+	void Surface::CentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color)
+	{
+		int x = (m_Width - (int)strlen(a_String) * 6 * xscale) / 2;
+		PrintScaled(a_String, x, y1, xscale, yscale, color);
+	}
+
+	void Surface::Print( const char* a_String, int x1, int y1, Pixel color )
 	{
 		if (!fontInitialized) 
 		{
@@ -116,19 +123,21 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::PrintScaled(char* a_String, int x1, int y1, int xscale, int yscale, Pixel color)
+	void Surface::PrintScaled(const char* a_String, int x1, int y1, int xscale, int yscale, Pixel color)
 	{
+		if (x1 < 0 || y1 < 0 || x1 + static_cast<int>(strlen(a_String)) * 6 * xscale > m_Width || y1 + 6 * yscale > m_Height)
+			return;
 		if (!fontInitialized)
 		{
 			InitCharset();
 			fontInitialized = true;
 		}
 		Pixel* t = m_Buffer + x1 + y1 * m_Pitch; // t is the pixel to begin with
-		for (int i = 0; i < (int)(strlen(a_String)); i++, t += (6 * xscale)) // go to the next letter and move to the right
+		for (int i = 0; i < static_cast<int>(strlen(a_String)); i++, t += (6 * xscale)) // go to the next letter and move to the right
 		{
 			long pos = 0;
-			if ((a_String[i] >= 'A') && (a_String[i] <= 'Z')) pos = s_Transl[(unsigned short)(a_String[i] - ('A' - 'a'))];
-			else pos = s_Transl[(unsigned short)a_String[i]];
+			if ((a_String[i] >= 'A') && (a_String[i] <= 'Z')) pos = s_Transl[static_cast<unsigned short>(a_String[i] - ('A' - 'a'))];
+			else pos = s_Transl[static_cast<unsigned short>(a_String[i])];
 			Pixel* a = t;
 			char* c = (char*)s_Font[pos];
 			for (int v = 0; v < 5 * xscale; v += xscale, c += 1, a += m_Pitch * yscale) 
@@ -146,16 +155,6 @@ namespace Tmpl8 {
 					}
 				}
 			}
-		}
-	}
-
-	void Surface::Trajectory(float start_x, float start_y, float v, float g, float angle)
-	{
-		Pixel* t = m_Buffer;
-		for (int i = 0; i < ScreenWidth; i++)
-		{
-			float height = 0;
-			//*(m_Buffer + i + m_Pitch * height) = 0x00FF00;
 		}
 	}
 
@@ -240,6 +239,23 @@ namespace Tmpl8 {
 		Line( (float)x1, (float)y1, (float)x1, (float)y2, c );
 	}
 
+	void Surface::Box(vec2 pos1, vec2 pos2, Pixel c)
+	{
+		Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), c);
+	}
+
+	void Surface::BoxThicc( int x1, int y1, int x2, int y2, int width, Pixel c)
+	{
+		for (int i = 0; i < width; i++)
+		{
+			Box(x1 + i, y1 + i, x2 - i, y2 - i, c);
+		}
+	}
+	void Surface::BoxThicc( vec2 pos1, vec2 pos2, int width, Pixel c)
+	{
+		BoxThicc(pos1.x, pos1.y, pos2.x, pos2.y, width, c);
+	}
+
 	void Surface::Bar( int x1, int y1, int x2, int y2, Pixel c )
 	{
 		Pixel* a = x1 + y1 * m_Pitch + m_Buffer;
@@ -258,7 +274,24 @@ namespace Tmpl8 {
 		float precision = 2 * PI / steps;
 		for (float i = 0; i < 2 * PI; i += precision)
 		{
-			Surface::Plot(_pos.x + cos(i) * r, _pos.y + sin(i) * r, c);
+			Plot(_pos.x + cos(i) * r, _pos.y + sin(i) * r, c);
+		}
+	}
+
+	void Surface::CircleFull( vec2 _pos, int _rMin, int _rMax, Pixel c )
+	{
+		vec2 pos1 = _pos - static_cast<float>(_rMax); // top left bound
+		vec2 pos2 = _pos + static_cast<float>(_rMax); // bottom right bound
+		for (int x = pos1.x; x < pos2.x; x++)
+		{
+			for (int y = pos1.y; y < pos2.y; y++)
+			{
+				float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, _pos);
+				if (dist <= _rMax && dist >= _rMin)
+				{
+					Plot(x, y, c);
+				}
+			}
 		}
 	}
 

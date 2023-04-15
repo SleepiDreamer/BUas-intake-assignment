@@ -55,9 +55,10 @@ public:
 	// Special operations
 	void InitCharset();
 	void SetChar( int c, char* c1, char* c2, char* c3, char* c4, char* c5 );
-	void Centre( char* a_String, int y1, Pixel color );
-	void Print( char* a_String, int x1, int y1, Pixel color );
-	void PrintScaled(char* a_String, int x1, int y1, int xscale, int yscale, Pixel color);
+	void Centre( const char* a_String, int y1, Pixel color );
+	void CentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color);
+	void Print( const char* a_String, int x1, int y1, Pixel color );
+	void PrintScaled(const char* a_String, int x1, int y1, int xscale, int yscale, Pixel color);
 	void Clear( Pixel a_Color );
 	void Line( float x1, float y1, float x2, float y2, Pixel color );
 	void Plot( int x, int y, Pixel c );
@@ -66,15 +67,17 @@ public:
 	void BlendCopyTo( Surface* a_Dst, int a_X, int a_Y );
 	void ScaleColor( unsigned int a_Scale );
 	void Box( int x1, int y1, int x2, int y2, Pixel color );
-	void Box(vec2 pos1, vec2 pos2, int c) { Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), c); }
+	void Box(vec2 pos1, vec2 pos2, Pixel color);
+	void BoxThicc(int x1, int y1, int x2, int y2, int width, Pixel c);
+	void BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c);
 	void Bar( int x1, int y1, int x2, int y2, Pixel color );
 	void Circle(vec2 _pos, int r, Pixel c);
-	void Trajectory(float start_x, float start_y, float v, float g, float angle);
+	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel c);
 	void Resize( Surface* a_Orig );
-	void DrawView(int x1, int y1, int x2, int y2, Pixel color);
-	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2);
-	bool CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2);
-	int Visibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2);
+	void DrawView(int x1, int y1, int x2, int y2, Pixel color); // OLD
+	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
+	bool CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
+	int Visibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 private:
 	// Attributes
 	Pixel* m_Buffer{nullptr};	

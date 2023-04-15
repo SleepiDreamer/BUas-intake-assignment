@@ -15,30 +15,30 @@ namespace Tmpl8
 
     void BulletManager::enable(vec2 _pos, vec2 _vel, float _scale, float _damage)
     {
-        Bullet* element = pool[n_active];
+        Bullet* element = pool[n_active++];
         element->setActive(true);
         element->setPos(_pos);
         element->setVel(_vel);
         element->setSize(_scale);
         element->setDamage(_damage);
-        n_active++;
     }
 
     void BulletManager::disable(int _id)
     {
         int current = 0;
         int i = 0;
-        for (Bullet* element : pool)
+        for (Bullet* bullet : pool)
         {
-            if (element->getId() == _id)
+            if (bullet->getId() == _id)
             {
                 current = i;
+                break;
             }
             i++;
         }
-        pool[current]->reset();
-        pool[current]->setPos({ -100, -100 });
-        std::swap(pool[current], pool[--n_active]);
+        if (current != n_active - 1) std::swap(pool[current], pool[n_active - 1]);
+        pool[n_active - 1]->setActive(false);
+    	n_active--;
     }
     
     void BulletManager::render(Surface* _screen)
@@ -46,7 +46,6 @@ namespace Tmpl8
         for (int i = 0; i < n_active; i++)
         {
             pool[i]->render(_screen);
-            _screen->Circle(pool[i]->getPos(), 3, 0x00ff00);
         }
     }
 
@@ -55,14 +54,23 @@ namespace Tmpl8
         for (int i = 0; i < n_active; i++)
         {
             Bullet* elm = (pool[i]);
-            if (elm->update(_dt)) // calls update and checks if bullet should be disabled (return type bool)
-            {
-	            disable(elm->getId());
-            }
-            /*if (elm->getPos().x < 0 || elm->getPos().x > ScreenWidth || elm->getPos().y < 0 || elm->getPos().y > ScreenHeight)
+            elm->update(_dt);
+            if (elm->getPos().x < 0 || elm->getPos().x > ScreenWidth || elm->getPos().y < 0 || elm->getPos().y > ScreenHeight)
             {
                 disable(elm->getId());
-            }*/
+            }
         }
+    }
+
+    void BulletManager::clear()
+    {
+        for (int i = 0; i < n_active; i++)
+        {
+            Bullet* bullet = pool[i];
+            std::cout << bullet->getId() << std::endl;
+            bullet->setActive(false);
+            //enemy->setPos({ 0, 0 });
+        }
+        n_active = 0;
     }
 }

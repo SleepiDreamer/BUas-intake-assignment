@@ -32,6 +32,9 @@
     <ClCompile Include="enemyManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="powerup.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="surface.h">
@@ -66,6 +69,9 @@
     </ClInclude>
     <ClInclude Include="poolManager.h" />
     <ClInclude Include="enemyManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="powerup.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

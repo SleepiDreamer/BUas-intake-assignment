@@ -39,7 +39,8 @@ namespace Tmpl8 {
 		{
 			dir = { 0, 0 };
 			vel = { 0, 0 };
-			size = { static_cast<float>(sprite->GetWidth()), static_cast<float>(sprite->GetHeight()) };
+			if (sprite != nullptr) size = { static_cast<float>(sprite->GetWidth()), static_cast<float>(sprite->GetHeight()) };
+			else size = { 50, 50 };
 			damage = 0;
 		}
 
@@ -47,7 +48,6 @@ namespace Tmpl8 {
 
 		virtual void render() const
 		{
-			sprite->SetFrame(frame);
 			sprite->Draw(screen, pos.x - (size.x / 2), pos.y - (size.y / 2));
 		}
 

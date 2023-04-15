@@ -1,6 +1,11 @@
 #include "enemyManager.h"
-#include "bullet.h"
+
+#include <string>
+#include <iostream>
+#include <cstring>
+
 #include "enemy.h"
+#include "util.h"
 
 namespace Tmpl8
 {
@@ -21,6 +26,7 @@ namespace Tmpl8
         element->setVel(_vel);
         element->setSize(_scale);
         element->setDamage(_damage);
+        element->setHP(50);
         n_active++;
     }
 
@@ -28,25 +34,27 @@ namespace Tmpl8
     {
         int current = 0;
         int i = 0;
-        for (Enemy* element : pool)
+        for (Enemy* enemy : pool)
         {
-            if (element->getId() == _id)
+            if (enemy->getId() == _id)
             {
                 current = i;
+                break;
             }
             i++;
         }
-        if (current != n_active - 1) std::swap(pool[current], pool[n_active - 1]);
         pool[current]->setActive(false);
-        n_active--;
+        std::swap(pool[current], pool[--n_active]);
     }
 
     void EnemyManager::render(Surface* _screen)
     {
         for (int i = 0; i < n_active; i++)
         {
-            pool[i]->render(_screen);
-            _screen->Circle(pool[i]->getPos(), pool[i]->getHitboxSize(), 0x00ff00);
+            Enemy* enemy = pool[i];
+            enemy->render(_screen);
+            //_screen->Circle(pool[i]->getPos(), pool[i]->getHitboxSize(), 0x00ff00); // DEBUG
+            //_screen->PrintScaled(intToChar(enemy->getId()), enemy->getPos().x, enemy->getPos().y - 20, 3, 3, 0x00ff00);
         }
     }
 
@@ -54,26 +62,53 @@ namespace Tmpl8
     {
         for (int i = 0; i < n_active; i++)
         {
-            Enemy* elm = (pool[i]);
-            elm->update(_dt);
-            elm->PointTowards(_playerPos);
-            elm->MoveTowards(_playerPos, 100.0f);
+            Enemy* enemy = (pool[i]);
+            enemy->update(_dt);
+            enemy->PointTowards(_playerPos);
+            enemy->MoveTowards(_playerPos, 100.0f);
         }
     }
 
-    bool EnemyManager::collisionCheck(Bullet* _bullet)
+    void EnemyManager::clear()
+    {
+        for (int i = 0; i < n_active; i++)
+        {
+            Enemy* enemy = pool[i];
+            std::cout << enemy->getId() << std::endl;
+            enemy->setActive(false);
+            //enemy->setPos({ 0, 0 });
+        }
+        n_active = 0;
+    }
+
+    bool EnemyManager::bulletCollisionCheck(Bullet* _bullet)
     {
         // go through all enemies
-        for (Enemy* enemy : pool)
+        for (int i = 0; i < n_active; i++)
         {
-            if (enemy->getActive() && distanceBetween(_bullet->getPos(), enemy->getPos()) < enemy->getHitboxSize())
+            Enemy* enemy = pool[i];
+            if (distanceBetween(_bullet->getPos(), enemy->getPos()) < enemy->getHitboxSize())
             {
                 enemy->setHP(enemy->getHP() - _bullet->getDamage());
-                std::cout << "hit!" << std::endl;
+                std::cout << "hit enemy " << enemy->getId() << std::endl;
                 if (enemy->getHP() <= 0)
                 {
                     disable(enemy->getId());
                 }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool EnemyManager::playerCollisionCheck(Player* _player)
+    {
+        for (int i = 0; i < n_active; i++)
+        {
+            Enemy* enemy = pool[i];
+            if (distanceBetween(_player->getPos(), enemy->getPos()) < enemy->getHitboxSize() + _player->getSize().x / 2)
+            {
+                std::cout << "player hit!" << std::endl;
                 return true;
             }
         }

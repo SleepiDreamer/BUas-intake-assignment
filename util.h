@@ -14,18 +14,9 @@ namespace Tmpl8
 	int nthDigit(const int number, const int n);
 
 	/**
-	 * \brief returns an XY coordinate based on an index and width. Mostly useful for spritesheets
-	 * \param index  the index entry of the spritesheet you want (left to right, top to bottom)
-	 * \param width  the width of the spritesheet (in entries)
-	 * \return the sprite's entryX and entryY coordinate in the spritesheet as a tuple of two integers
-	 */
-	std::tuple<int, int> IndexToXY(const int index, const int width);
-
-	/**
 	 * \return the distance between p1 and p2 (float)
 	 */
 	float distanceBetween(const float x1, const float y1, const float x2, const float y2);
-
 	inline float distanceBetween(const vec2& pos1, const vec2& pos2)
 	{
 		return distanceBetween(pos1.x, pos1.y, pos2.x, pos2.y);
@@ -40,13 +31,28 @@ namespace Tmpl8
 	 * \return 
 	 */
 	float RotationBetweenPoints(const float x1, const float y1, const float x2, const float y2);
+	inline float RotationBetweenPoints(const vec2& pos1, const vec2& pos2)
+	{
+		return RotationBetweenPoints(pos1.x, pos1.y, pos2.x, pos2.y);
+	}
 
 	const vec2& calcDir(const vec2& _vel);
 
 	float calcSpeed(const vec2& _vel);
 
-	inline float RotationBetweenPoints(const vec2& pos1, const vec2& pos2)
-	{
-		return RotationBetweenPoints(pos1.x, pos1.y, pos2.x, pos2.y);
-	}
+	vec2 reflectVector(vec2& _vel, const vec2& _normal);
+
+	float vec2ToAngle(const vec2& _vel);
+
+	int randint(int _min, int _max);
+
+	float randfloat(float _min, float _max);
+
+	bool insideScreen(vec2 _pos);
+
+	char* stringToCString(const std::string& str);
+
+	bool insideRectangle(vec2 _point, vec2 _pos1, vec2 _pos2);
+
+	float roundNumber(float _number, int _dec);
 }
