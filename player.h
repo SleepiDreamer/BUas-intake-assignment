@@ -34,6 +34,8 @@ namespace Tmpl8 {
 		void setInvincibility(float _invincibility) { invincibility	= _invincibility; }
 		float getInvincibility() const { return invincibility; }
 		bool playerDamaged();
+		void setShotDelay(float _shotDelay) { shotDelay = _shotDelay; }
+		float getShotDelay() const { return shotDelay; }
 
 		Player(vec2 _pos, Surface* _screen, std::unique_ptr<Sprite> _sprite) :
 			Entity(_pos, _screen, std::move(_sprite))

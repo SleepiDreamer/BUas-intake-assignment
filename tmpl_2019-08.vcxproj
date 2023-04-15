@@ -231,6 +231,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="poolManager.cpp" />
+    <ClCompile Include="powerup.cpp" />
     <ClCompile Include="surface.cpp" />
     <ClCompile Include="template.cpp" />
     <ClCompile Include="util.cpp" />
@@ -239,13 +240,13 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletManager.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="colours.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyManager.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="poolManager.h" />
+    <ClInclude Include="powerup.h" />
     <ClInclude Include="surface.h" />
     <ClInclude Include="template.h" />
     <ClInclude Include="util.h" />

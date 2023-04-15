@@ -62,5 +62,15 @@ namespace Tmpl8
         }
     }
 
-    // TODO: implement clear() function
+    void BulletManager::clear()
+    {
+        for (int i = 0; i < n_active; i++)
+        {
+            Bullet* bullet = pool[i];
+            std::cout << bullet->getId() << std::endl;
+            bullet->setActive(false);
+            //enemy->setPos({ 0, 0 });
+        }
+        n_active = 0;
+    }
 }

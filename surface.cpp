@@ -91,13 +91,19 @@ namespace Tmpl8 {
 		for ( int i = 0; i < s; i++ ) m_Buffer[i] = a_Color;
 	}
 
-	void Surface::Centre( char* a_String, int y1, Pixel color )
+	void Surface::Centre( const char* a_String, int y1, Pixel color )
 	{
 		int x = (m_Width - (int)strlen( a_String ) * 6) / 2;
 		Print( a_String, x, y1, color );
 	}
 
-	void Surface::Print( char* a_String, int x1, int y1, Pixel color )
+	void Surface::CentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color)
+	{
+		int x = (m_Width - (int)strlen(a_String) * 6 * xscale) / 2;
+		PrintScaled(a_String, x, y1, xscale, yscale, color);
+	}
+
+	void Surface::Print( const char* a_String, int x1, int y1, Pixel color )
 	{
 		if (!fontInitialized) 
 		{
@@ -117,7 +123,7 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::PrintScaled(char* a_String, int x1, int y1, int xscale, int yscale, Pixel color)
+	void Surface::PrintScaled(const char* a_String, int x1, int y1, int xscale, int yscale, Pixel color)
 	{
 		if (x1 < 0 || y1 < 0 || x1 + static_cast<int>(strlen(a_String)) * 6 * xscale > m_Width || y1 + 6 * yscale > m_Height)
 			return;

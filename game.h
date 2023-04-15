@@ -8,6 +8,7 @@
 #include "enemy.h"
 #include "template.h"
 #include "player.h"
+#include "powerup.h"
 //#include "poolManager.h"
 #include "bulletManager.h"
 #include "bullet.h"
@@ -63,10 +64,20 @@ namespace Tmpl8
 
 		int score = 0;
 		int frame = 0;
-		float time = 0;
-		float enemySpawnTimer = 0;
-		float enemySpawnDelay;
+		float time = 0.0f;
+		float enemySpawnTimer = 0.0f;
+		float enemySpawnDelay = 1.0f;
 		float gameOverTimer = 0.0f;
+		float powerupSpawnTimer = 0.0f;
+		float powerupSpawnDelay = 2.0f;
+
+		float powerupDamageTimer = 0.0f;
+		float powerupSpeedTimer = 0.0f;
+		float powerupFireRateTimer = 0.0f;
+		float powerupInvincibilityTimer = 0.0f;
+		float powerupNukeTimer = 0.0f;
+		float powerupHealTimer = 0.0f;
+
 		bool gameRunning = false;
 		Sprite* backdrop = new Sprite(new Surface("assets/backdrop.jpg"), 1);
 
@@ -78,5 +89,7 @@ namespace Tmpl8
 		std::shared_ptr<Sprite> bulletSprite = std::make_shared<Sprite>(new Surface("assets/Bullet/bullet.png"), 1);
 		EnemyManager enemyPool = EnemyManager(200);
 		std::shared_ptr<Sprite> enemySprite = std::make_shared<Sprite>(new Surface("assets/ctankbase.tga"), 16);
+		std::unique_ptr<Sprite> powerupSprite = std::make_unique<Sprite>(new Surface("assets/powerup.png"), 1);
+		Powerup* powerup;
 	};
 }

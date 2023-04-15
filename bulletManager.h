@@ -23,6 +23,7 @@ namespace Tmpl8 {
 
 		void render(Surface* _screen);
 		void update(vec2 _playerPos, float _dt);
+		void clear();
 		void collisionCheck(Bullet* _bullet, float _distance);
 
 		BulletManager(int _size)

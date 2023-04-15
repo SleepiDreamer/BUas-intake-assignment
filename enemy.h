@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "surface.h"
 #include "entity.h"
 
@@ -11,6 +13,7 @@ namespace Tmpl8 {
 		bool active;
 		float hitboxSize = 20.0f;
 		float scale = 1.0f;
+		std::vector<int> pastels = { 0xB2A4FF, 0xFFB4B4, 0xFFDEB4, 0xFDF7C3, 0xF7C8E0, 0xDFFFD8, 0xB4E4FF, 0x95BDFF };
 
 	public:
 		void setHP(float _hp) { hp = _hp; }

@@ -32,6 +32,9 @@
     <ClCompile Include="enemyManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="powerup.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="surface.h">
@@ -68,7 +71,7 @@
     <ClInclude Include="enemyManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="colours.h">
+    <ClInclude Include="powerup.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

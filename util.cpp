@@ -2,20 +2,15 @@
 #include "template.h"
 #include "surface.h"
 #include <cmath>
-#include <time.h>
 #include <random>
 #include <string>
+#include <charconv>
 
 namespace Tmpl8
 {
 	int nthDigit(const int number, const int n)
 	{
 		return static_cast<int>(number / pow(10, n)) % 10;
-	}
-
-	std::tuple<int, int> IndexToXY(const int index, const int width)
-	{
-		return { index % width, floor(index / width) };
 	}
 
 	float distanceBetween(const float x1, const float y1, const float x2, const float y2)
@@ -26,9 +21,7 @@ namespace Tmpl8
 	float RotationBetweenPoints(const float x1, const float y1, const float x2, const float y2) // using code from https://www.geeksforgeeks.org/program-find-slope-line/
 	{
 		if (x2 - x1 != 0) {
-			bool toLeft = x1 > x2;
-			if (toLeft) return atan((y2 - y1) / (x2 - x1)) + PI;
-			//std::cout << atan((y2 - y1) / (x2 - x1)) << std::endl;
+			if (x1 > x2) return atan((y2 - y1) / (x2 - x1)) + PI;
 			return atan((y2 - y1) / (x2 - x1));
 		}
 		return 1.5 * PI;
@@ -70,12 +63,7 @@ namespace Tmpl8
 		return dis(gen);
 	}
 
-	float randfloat(const float _min, const float _max) // SHOULDNT USE, HAS SOME WEIRD BUGS WITH SEEDING
-	{
-		return _min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (_max - _min)));
-	}
-
-	float randfloat2(const float _min, const float _max)
+	float randfloat(const float _min, const float _max)
 	{
 		static std::random_device rd;
 		static std::mt19937 gen(rd());
@@ -88,18 +76,10 @@ namespace Tmpl8
 		return _pos.x > 0 && _pos.x < ScreenWidth && _pos.y > 0 && _pos.y < ScreenHeight;
 	}
 
-	char* intToChar(int _int)
-	{
-		char* str = new char[20]; // allocate memory
-		sprintf(str, "%d", _int); // int -> string
-		return str;
-	}
-
-	char* floatToChar(float _float)
-	{
-		char* str = new char[20]; // allocate memory
-		sprintf(str, "%f", _float); // float -> string
-		return str;
+	char* stringToCString(const std::string& str) {
+		char* charPtr = new char[str.length() + 1];
+		std::strcpy(charPtr, str.c_str()); // TODO: don't use heap
+		return charPtr;
 	}
 
 	bool insideRect(vec2 _point, vec2 _pos1, vec2 _pos2)
@@ -109,6 +89,9 @@ namespace Tmpl8
 
 	float roundNumber(float _number, int _dec)
 	{
-		return 0.0f;
+		float mult = 10;
+		for (int i = 0; i < _dec; i++) mult *= 10;
+		mult /= 10;
+		return std::round(_number * mult) / mult;
 	}
 }
