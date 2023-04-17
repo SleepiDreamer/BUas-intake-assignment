@@ -30,10 +30,11 @@ namespace Tmpl8 {
 		float getHp() const { return hp; }
 		float getMaxHp() const { return maxHp; }
 		bool canShoot() const { return (lastShot > shotDelay); }
+		bool canShootFast() const { return lastShot > (shotDelay / 2); }
 		void resetShotTimer() { lastShot = 0; }
 		void setInvincibility(float _invincibility) { invincibility	= _invincibility; }
 		float getInvincibility() const { return invincibility; }
-		bool playerDamaged();
+		bool playerSubtractHealth();
 		void setShotDelay(float _shotDelay) { shotDelay = _shotDelay; }
 		float getShotDelay() const { return shotDelay; }
 

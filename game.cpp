@@ -2,69 +2,44 @@
 #include "surface.h"
 #include "util.h"
 
-#include <cstdlib>
-#include <iostream>
 #include <windows.h>
 #include <algorithm>
+#include <cassert>
 #include <random>
-#include <ctime>
 #include <string>
+
+float constexpr POWERUP_DURATION = 6.0f;
+float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
+
+// TODO: dashes
+// TODO: high score
+// TODO: Transparency
+// TODO: 
 
 namespace Tmpl8
 {
-	Game::Game(Surface* surface)
-	{
-		screen = surface;		
-		//auto enemySprite = std::make_unique<Sprite>(new Surface("assets/ctankbase.tga"), 16);
-	}
-	Game::~Game()
-	{
-		delete player;
-
-	}
-
-	void Game::playButton(vec2 _pos1, vec2 _pos2)
-	{
-		if (mousePos.x > _pos1.x && mousePos.x < _pos2.x && mousePos.y > _pos1.y && mousePos.y < _pos2.y)
-		{
-			if (mouseLeftDown)
-			{
-				gameRunning = true;
-				onStart();
-				std::cout << "Button pressed" << std::endl;
-			}
-		}
-	}
-	void Game::quitButton(vec2 _pos1, vec2 _pos2)
+	/**
+	 * \brief check pressed state for button
+	 * \param _pos1 top left corner of button
+	 * \param _pos2 bottom right corner of button
+	 * \return whether button is pressed or not
+	 */
+	bool Game::buttonPressed(vec2 _pos1, vec2 _pos2) const
 	{
 		if (mouseLeftDown && mousePos.x > _pos1.x && mousePos.x < _pos2.x && mousePos.y > _pos1.y && mousePos.y < _pos2.y)
 		{
-			Shutdown();
+			return true;
 		}
+		return false;
 	}
 
 	void Game::spawnEnemy()
 	{
-		vec2 pos;
-		std::cout << "spawning enemy..." << std::endl;
-		do {
-			pos = { randfloat(-200, ScreenWidth + 200), randfloat(-200, ScreenHeight + 200) };
-		} while (insideScreen(pos) || distanceBetween(player->getPos(), pos) < 400.0f);
-		enemyPool.enable(pos, { 0, 0 }, 1.0f, 10.0f);
-	}
-
-	// ---------------------------------------------------------- |
-	// Reset the game when the player dies                        |
-	// ---------------------------------------------------------- |
-	void Game::GameReset()
-	{
-		std::cout << "resetting game..." << std::endl;
-		screen->Clear(0);
-		bulletPool.clear();
-		enemyPool.clear();
-		player->setInvincibility(0);
-		time = 0;
-		score = 0;
+		vec2 spawnPos;
+		do { // only spawn enemy outside of screen and not too close to player
+			spawnPos = { randfloat(-200, ScreenWidth + 200), randfloat(-200, ScreenHeight + 200) };
+		} while (insideScreen(spawnPos) || distanceBetween(player->getPos(), spawnPos) < 400.0f);
+		enemyPool.enable(spawnPos, { 0, 0 }, 1.0f, 10.0f);
 	}
 
 	// ----------------------------------------------------------- |
@@ -83,19 +58,20 @@ namespace Tmpl8
 	// ----------------------------------------------------------- |
 	void Game::onStart()
 	{
+		gameRunning = true;
+		bulletPool.clear();
+		enemyPool.clear();
+		time = 0;
+		score = 0;
 		player->setPos({ 500, 500 });
 		player->setHp(player->getMaxHp());
-		std::cout << "Started!" << std::endl;
+		player->setInvincibility(0);
 		iButtonPressed = false;
 		powerup->setActive(false);
 		powerup->setLifetime(0.0f);
 		powerup->setHP(powerup->getMaxHp());
-		powerupSpeedTimer = 0.0f;
-		powerupDamageTimer = 0.0f;
-		powerupHealTimer = 0.0f;
 		powerupSpawnTimer = 0.0f;
-		powerupNukeTimer = 0.0f;
-		powerupInvincibilityTimer = 0.0f;
+		powerupTimer = 0.0f;
 	}
 
 	// ----------------------------------------------------------- |
@@ -109,11 +85,6 @@ namespace Tmpl8
 		SDL_PushEvent(&user_event);
 	}
 
-
-
-
-
-
 	// ----------------------------------------------------------- |
 	// Main application tick function							   |
 	// ----------------------------------------------------------- |
@@ -121,7 +92,7 @@ namespace Tmpl8
 	{
 		//dt = deltaTime
 		dt = min(dt / 1000.0f, 0.1f); // ms => s and clamp to minimum 10 fps
-		if (powerupSpeedTimer > 0.0f) dt *= 0.5f;
+		if (powerupType == 4) dt *= 0.5f; // slow motion powerup
 		
 		const int screen_width = screen->GetWidth();
 		const int screen_height = screen->GetHeight();
@@ -155,10 +126,13 @@ namespace Tmpl8
 			}
 
 			// ---*--- BULLETS ---*---
-			if (mouseLeftDown && player->canShoot())
+			bool canShoot;
+			if (powerupType == 2) canShoot = player->canShootFast();
+			else canShoot = player->canShoot();
+			if (mouseLeftDown && canShoot)
 			{
 				float damage = 10.0f;
-				if (powerupDamageTimer > 0.0f) damage *= 3.0f;
+				if (powerupType == 1) damage *= 3.0f;
 				bulletPool.enable(player->getPos(), player->getDir() * 1000.0f , 1.0f, damage);
 				player->resetShotTimer();
 			}
@@ -168,7 +142,7 @@ namespace Tmpl8
 			if (powerup->getActive())
 			{
 				powerup->setLifetime(powerup->getLifetime() - dt);
-				powerup->setScale(powerup->getLifetime() / 6.0f);
+				//powerup->setScale(powerup->getLifetime() / 6.0f);
 				if (powerup->getLifetime() <= 0.0f)
 				{
 					powerup->setActive(false);
@@ -183,23 +157,10 @@ namespace Tmpl8
 					powerupSpawnTimer = 0.0f;
 				}
 			}
-			powerupFireRateTimer -= dt;
-			powerupDamageTimer -= dt;
-			powerupSpeedTimer -= dt * 2;
-			powerupInvincibilityTimer -= dt;
-			powerupNukeTimer -= dt;
-			powerupHealTimer -= dt;
-			if (powerupFireRateTimer > 0.0f) player->setShotDelay(0.02f);
-			else player->setShotDelay(0.05f);
-			if (powerupSpeedTimer > 0.0f) dt *= 0.5f;
-			else dt *= 2.0f;
-			if (powerupNukeTimer == 2.0f)
-			{
-				score += bulletPool.getActiveBullets() * 50;
-				std::cout << bulletPool.getActiveBullets() << std::endl;
-				bulletPool.clear();
-				std::cout << "nuke" << std::endl;
-			}
+			powerupTimer -= dt;
+			if (powerupTimer <= 0.0f) powerupType = 0;
+			if (powerupType == 4) powerupTimer -= dt; // make speed powerup not last longer
+			if (powerupType == 1) player->setDamage(3.0f);
 
 			// ---*--- COLLISIONS ---*---
 			for (int i = 0; i < bulletPool.getActiveBullets(); i++) 
@@ -218,18 +179,16 @@ namespace Tmpl8
 						bulletPool.disable(bullet->getId());
 						powerupSpawnTimer = 0.0f;
 						powerup->consume();
-						const int randPowerup = randint(0, 6);
-						std::cout << "powerup: " << randPowerup << std::endl;
-						const float duration = 6.0f;
-						if		(randPowerup == 0) powerupDamageTimer = duration;				// damage
-						else if (randPowerup == 1) powerupInvincibilityTimer = duration;		// invincibility
-						else if (randPowerup == 3) {											// heal +1
-							powerupHealTimer = 2.0f;
-							player->setHp(min(player->getHp() + 1, 3)); 
-						}				
-						else if (randPowerup == 4) powerupNukeTimer = 2.0f;						// kill all enemies		
-						else if (randPowerup == 5) powerupFireRateTimer = duration;				// fire rate
-						else if (randPowerup == 6) powerupSpeedTimer = duration;				// slow down game
+						powerupType = randint(1, 6);
+						switch (powerupType)
+						{
+						case 1: powerupTimer = POWERUP_DURATION; break; // damage
+						case 2: powerupTimer = POWERUP_DURATION; break; // fire rate
+						case 3: powerupTimer = POWERUP_DURATION; break; // invincibility
+						case 4: powerupTimer = POWERUP_DURATION; break; // speed
+						case 5: powerupTimer = POWERUP_MESSAGE_DURATION; player->setHp(min(player->getHp() + 1, 3)); break; // health
+						case 6: powerupTimer = POWERUP_MESSAGE_DURATION; enemyPool.clear(); score += enemyPool.getActiveEnemies() * 10; break; // nuke
+						}
 						score += 10;
 						stop = true;
 					}
@@ -259,44 +218,48 @@ namespace Tmpl8
 				if (player->getHp() >= i + 1)
 					heartSprite->DrawScaled(static_cast<int>(xPos), 50, 64, 64, screen, false);
 				else
+
 					heartSprite2->DrawScaled(static_cast<int>(xPos), 50, 64, 64, screen, false);
 			}
-			if	(powerupFireRateTimer > 0.0f) screen->CentreScaled("Faster gun!", ScreenHeight - 60, 5, 5, 0xffffff);
-			else if (powerupDamageTimer > 0.0f) screen->CentreScaled("More damage!", ScreenHeight - 60, 5, 5, 0xffffff);
-			else if (powerupSpeedTimer > 0.0f) screen->CentreScaled("Slower time!", ScreenHeight - 60, 5, 5, 0xffffff);
-			else if (powerupInvincibilityTimer > 0.0f) screen->CentreScaled("Invincible!", ScreenHeight - 60, 5, 5, 0xffffff);
-			else if (powerupNukeTimer > 0.0f) screen->CentreScaled("Nuked!", ScreenHeight - 60, 5, 5, 0xffffff);
-			else if (powerupHealTimer > 0.0f) screen->CentreScaled("Healed!", ScreenHeight - 60, 5, 5, 0xffffff);
-
+			switch (powerupType)
+			{
+			case 1: screen->CentreScaled("More damage", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 2: screen->CentreScaled("Faster gun", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 3: screen->CentreScaled("Invincibility", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 4: screen->CentreScaled("Slower time", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 5: screen->CentreScaled("Healed", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 6: screen->CentreScaled("Nuked", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			}
+			screen->CentreBar(ScreenHeight - 20, ScreenHeight - 10, static_cast<int>((powerupTimer / POWERUP_DURATION) * 300.0f), 0xffffff);
 
 			// ---*--- DEATH MECHANIC ---*---
 			time += dt;
 
-			if (player->getInvincibility() <= 0.0f && enemyPool.playerCollisionCheck(player) && powerupInvincibilityTimer <= 0.0f)
+			if (player->getInvincibility() <= 0.0f && enemyPool.playerCollisionCheck(player) && powerupType != 3)
 			{
-				if (player->playerDamaged())
+				if (player->playerSubtractHealth()) // check if player is dead
 				{
 					gameRunning = false;
-					//GameReset();
 					gameOverTimer = 2.0f;
 				}
 			}
 		}
 		// ---*--- MENU SCREEN ---*---
 		else if (gameOverTimer <= 0)
-		{ // menu screen
-			//screen->Line(ScreenWidth / 2, 0, ScreenWidth / 2, ScreenHeight, 0xffffff); // center line
+		{
 			screen->CentreScaled("MR. BOUNCE", 40, 10, 10, 0xffffff);
 
+			// play button
 			vec4 playButtonBox = { 545, 280, 730, 350 };
-			playButton({ playButtonBox.x, playButtonBox.y }, { playButtonBox.z, playButtonBox.w });
-			screen->Box(playButtonBox.x, playButtonBox.y, playButtonBox.z, playButtonBox.w, 0xffffff);
+			screen->Box({ playButtonBox.x, playButtonBox.y }, { playButtonBox.z, playButtonBox.w }, 0xffffff);
 			screen->CentreScaled("PLAY", 300, 6, 6, 0xffffff);
+			if (buttonPressed({ playButtonBox.x, playButtonBox.y }, { playButtonBox.z, playButtonBox.w })) onStart();
 
+			// quit button
 			vec4 quitButtonBox = { 545, 380, 730, 450 };
-			quitButton({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w });
-			screen->Box(quitButtonBox.x, quitButtonBox.y, quitButtonBox.z, quitButtonBox.w, 0xffffff);
+			screen->Box({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w }, 0xffffff);
 			screen->CentreScaled("QUIT", 400, 6, 6, 0xffffff);
+			if (buttonPressed({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w })) Shutdown();
 		}
 		// ---*--- GAME OVER SCREEN ---*---
 		else if (gameOverTimer >= 0)
@@ -305,11 +268,16 @@ namespace Tmpl8
 			if (gameOverTimer >= 0.0f)
 			{
 				screen->Clear(0);
-				screen->PrintScaled("You Died!", 500, 300, 6, 6, 0xffffff);
+				screen->CentreScaled("You Died!", 300, 6, 6, 0xffffff);
+				screen->PrintScaled("Score: ", 460, 500, 6, 6, 0xffffff);
+				const char* scoreChar = stringToCString(std::to_string(score));
+				screen->PrintScaled(scoreChar, 690, 500, 6, 6, 0xffffff);
+				delete[] scoreChar;
 			}
 			else
 			{
-				GameReset();
+				screen->Clear(0x000000);
+				gameRunning = false;
 			}
 		}
 		frame++;

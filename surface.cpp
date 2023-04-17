@@ -239,9 +239,9 @@ namespace Tmpl8 {
 		Line( (float)x1, (float)y1, (float)x1, (float)y2, c );
 	}
 
-	void Surface::Box(vec2 pos1, vec2 pos2, Pixel c)
+	void Surface::Box(vec2 pos1, vec2 pos2, Pixel color)
 	{
-		Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), c);
+		Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color);
 	}
 
 	void Surface::BoxThicc( int x1, int y1, int x2, int y2, int width, Pixel c)
@@ -251,12 +251,13 @@ namespace Tmpl8 {
 			Box(x1 + i, y1 + i, x2 - i, y2 - i, c);
 		}
 	}
-	void Surface::BoxThicc( vec2 pos1, vec2 pos2, int width, Pixel c)
+
+	void Surface::BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c)
 	{
-		BoxThicc(pos1.x, pos1.y, pos2.x, pos2.y, width, c);
+		BoxThicc(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), width, c);
 	}
 
-	void Surface::Bar( int x1, int y1, int x2, int y2, Pixel c )
+	void Surface::Bar( int x1, int y1, int x2, int y2, Pixel c ) const
 	{
 		Pixel* a = x1 + y1 * m_Pitch + m_Buffer;
 		for (int y = y1; y <= y2 && y <= m_Height; y++)
@@ -267,14 +268,31 @@ namespace Tmpl8 {
 				
 	}
 
+	void Surface::Bar(vec2 pos1, vec2 pos2, Pixel color) const
+	{
+		Bar(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color);
+	}
+
+	void Surface::CentreBar(int y1, int y2, int width, Pixel c) const
+	{
+		const int x1 = m_Width / 2 - width / 2;
+		const int x2 = m_Width / 2 + width / 2;
+		Pixel* a = x1 + y1 * m_Pitch + m_Buffer;
+		for (int y = y1; y <= y2 && y <= m_Height; y++)
+		{
+			for (int x = 0; x <= (x2 - x1) && y < ScreenHeight; x++) a[x] = c;
+			a += m_Pitch;
+		}
+
+	}
+
 	void Surface::Circle( vec2 _pos, int r, Pixel c )
 	{
-		float i = 0;
-		float steps = 360;
-		float precision = 2 * PI / steps;
+		const float steps = 360;
+		const float precision = 2 * PI / steps;
 		for (float i = 0; i < 2 * PI; i += precision)
 		{
-			Plot(_pos.x + cos(i) * r, _pos.y + sin(i) * r, c);
+			Plot(static_cast<int>(_pos.x + cos(i)) * r, static_cast<int>(_pos.y + sin(i)) * r, c);
 		}
 	}
 

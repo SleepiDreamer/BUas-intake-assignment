@@ -70,7 +70,9 @@ public:
 	void Box(vec2 pos1, vec2 pos2, Pixel color);
 	void BoxThicc(int x1, int y1, int x2, int y2, int width, Pixel c);
 	void BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c);
-	void Bar( int x1, int y1, int x2, int y2, Pixel color );
+	void Bar( int x1, int y1, int x2, int y2, Pixel color ) const;
+	void Bar(vec2 pos1, vec2 pos2, Pixel color) const;
+	void CentreBar(int y1, int y2, int width, Pixel c) const;
 	void Circle(vec2 _pos, int r, Pixel c);
 	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel c);
 	void Resize( Surface* a_Orig );

@@ -10,7 +10,6 @@ namespace Tmpl8
         {
             pool.emplace_back(new Bullet({ 0, 0 }, _screen, _sprite, i));
         }
-        std::cout << "done!" << std::endl;
     }
 
     void BulletManager::enable(vec2 _pos, vec2 _vel, float _scale, float _damage)
@@ -67,9 +66,7 @@ namespace Tmpl8
         for (int i = 0; i < n_active; i++)
         {
             Bullet* bullet = pool[i];
-            std::cout << bullet->getId() << std::endl;
             bullet->setActive(false);
-            //enemy->setPos({ 0, 0 });
         }
         n_active = 0;
     }

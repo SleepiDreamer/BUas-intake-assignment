@@ -15,7 +15,6 @@ namespace Tmpl8
         {
             pool.emplace_back(new Enemy({ 0, 0 }, _screen, _sprite, i));
         }
-        std::cout << "done!" << std::endl;
     }
 
     void EnemyManager::enable(vec2 _pos, vec2 _vel, float _scale, float _damage)
@@ -74,7 +73,6 @@ namespace Tmpl8
         for (int i = 0; i < n_active; i++)
         {
             Enemy* enemy = pool[i];
-            std::cout << enemy->getId() << std::endl;
             enemy->setActive(false);
             //enemy->setPos({ 0, 0 });
         }
@@ -90,7 +88,6 @@ namespace Tmpl8
             if (distanceBetween(_bullet->getPos(), enemy->getPos()) < enemy->getHitboxSize())
             {
                 enemy->setHP(enemy->getHP() - _bullet->getDamage());
-                std::cout << "hit enemy " << enemy->getId() << std::endl;
                 if (enemy->getHP() <= 0)
                 {
                     disable(enemy->getId());
@@ -108,7 +105,6 @@ namespace Tmpl8
             Enemy* enemy = pool[i];
             if (distanceBetween(_player->getPos(), enemy->getPos()) < enemy->getHitboxSize() + _player->getSize().x / 2)
             {
-                std::cout << "player hit!" << std::endl;
                 return true;
             }
         }

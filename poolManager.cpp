@@ -12,7 +12,6 @@ namespace Tmpl8
         {
             pool.emplace_back(new T({ 0, 0 }, _screen, _sprite, i));
         }
-        std::cout << "done!" << std::endl;
     }
 
     template <typename T, int N>

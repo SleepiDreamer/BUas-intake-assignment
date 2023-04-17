@@ -37,7 +37,7 @@ namespace Tmpl8
 		if (invincibility < 0) invincibility = 0;
 	}
 
-	bool Player::playerDamaged()
+	bool Player::playerSubtractHealth()
 	{
 		hp -= 1;
 		if (hp == 0.0f)
