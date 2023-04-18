@@ -97,7 +97,10 @@ namespace Tmpl8
 		const int screen_width = screen->GetWidth();
 		const int screen_height = screen->GetHeight();
 
-		if (gameRunning) {
+		// ________°°°°°°°°°________ |
+		// ---*--- Main Game ---*--- |
+		// --------°°°°°°°°°-------- |
+		if (gameState == Playing) {
 			// ---*--- MOVEMENT ---*---
 			player->update(dt);
 			player->PointTowards(mousePos);
@@ -244,8 +247,10 @@ namespace Tmpl8
 				}
 			}
 		}
-		// ---*--- MENU SCREEN ---*---
-		else if (gameOverTimer <= 0)
+		// --------°°°°°°°°°°°-------- |
+		// ---*--- MENU SCREEN ---*--- |
+		// --------°°°°°°°°°°°-------- |
+		else if (gameState == MainMenu)
 		{
 			screen->CentreScaled("MR. BOUNCE", 40, 10, 10, 0xffffff);
 
@@ -261,8 +266,10 @@ namespace Tmpl8
 			screen->CentreScaled("QUIT", 400, 6, 6, 0xffffff);
 			if (buttonPressed({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w })) Shutdown();
 		}
-		// ---*--- GAME OVER SCREEN ---*---
-		else if (gameOverTimer >= 0)
+		// --------°°°°°°°°°°°°°°°°-------- |
+		// ---*--- GAME OVER SCREEN ---*--- |
+		// --------°°°°°°°°°°°°°°°°-------- |
+		else if (gameState == Death)
 		{
 			gameOverTimer -= dt;
 			if (gameOverTimer >= 0.0f)

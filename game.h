@@ -61,6 +61,9 @@ namespace Tmpl8
 		bool mouseLeftDown = false;
 		bool iButtonPressed = false;
 
+		enum gameStates { MainMenu, Playing, Death };
+		gameStates gameState = MainMenu;
+
 		int score = 0;
 		int frame = 0;
 		float time = 0.0f;
