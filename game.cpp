@@ -3,7 +3,7 @@
 #include "util.h"
 
 #include <windows.h>
-#include <algorithm>
+#include <fstream>
 #include <cassert>
 #include <random>
 #include <string>
@@ -11,10 +11,9 @@
 float constexpr POWERUP_DURATION = 6.0f;
 float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
 
-// TODO: dashes
-// TODO: high score
-// TODO: Transparency
-// TODO: 
+// TODO: transparency
+// TODO: trail behind player
+// TODO: upgrades
 
 namespace Tmpl8
 {
@@ -47,10 +46,10 @@ namespace Tmpl8
 	// ----------------------------------------------------------- |
 	void Game::Init()
 	{
-		player = new Player({ 0, 0 }, screen, std::move(playerSprite));
-		powerup = new Powerup({ 0, 0 }, screen, std::move(powerupSprite));
 		bulletPool.init(screen, bulletSprite);
 		enemyPool.init(screen, enemySprite);
+		std::ifstream file;
+		highScore = stoi(readNthLine("data.txt", 0));
 	}
 
 	// ----------------------------------------------------------- |
@@ -58,7 +57,7 @@ namespace Tmpl8
 	// ----------------------------------------------------------- |
 	void Game::onStart()
 	{
-		gameRunning = true;
+		gameState = Playing;
 		bulletPool.clear();
 		enemyPool.clear();
 		time = 0;
@@ -97,13 +96,29 @@ namespace Tmpl8
 		const int screen_width = screen->GetWidth();
 		const int screen_height = screen->GetHeight();
 
-		// ________°°°°°°°°°________ |
+		// ________~~~~~~~~~________ |
 		// ---*--- Main Game ---*--- |
-		// --------°°°°°°°°°-------- |
+		// --------~~~~~~~~~-------- |
 		if (gameState == Playing) {
 			// ---*--- MOVEMENT ---*---
 			player->update(dt);
 			player->PointTowards(mousePos);
+			if (player->canDash() && GetAsyncKeyState(0x5a))
+			{
+				player->dash( {0, -1} ); // UP
+			}
+			if (player->canDash() && GetAsyncKeyState(0x53))
+			{
+				player->dash({0, 1}); // DOWN
+			}
+			if (player->canDash() && GetAsyncKeyState(0x51))
+			{
+				player->dash({-1, 0}); // LEFT
+			}
+			if (player->canDash() && GetAsyncKeyState(0x44))
+			{
+				player->dash({1, 0}); // RIGHT
+			}
 
 			// ---*--- ENEMIES ---*---
 			enemyPool.update(player->getPos(), dt);
@@ -212,9 +227,7 @@ namespace Tmpl8
 			enemyPool.render(screen);
 			powerup->render(screen);
 			player->render();
-			const char* scoreChar = stringToCString(std::to_string(score));
-			screen->PrintScaled(scoreChar, 10, 10, 5, 5, 0xdddddd);
-			delete[] scoreChar;
+			screen->PrintScaled(std::to_string(score).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)
 			{
 				const float xPos = static_cast<float>(ScreenWidth) / 2.0f + (static_cast<float>(i) - (player->getMaxHp() - 1) / 2.0f) * 80.0f;
@@ -242,17 +255,20 @@ namespace Tmpl8
 			{
 				if (player->playerSubtractHealth()) // check if player is dead
 				{
-					gameRunning = false;
+					gameState = Death;
 					gameOverTimer = 2.0f;
+					writeToFile("data.txt", max(score, highScore));
+					highScore = max(score, highScore);
 				}
 			}
 		}
-		// --------°°°°°°°°°°°-------- |
+		// --------~~~~~~~~~~~-------- |
 		// ---*--- MENU SCREEN ---*--- |
-		// --------°°°°°°°°°°°-------- |
+		// --------~~~~~~~~~~~-------- |
 		else if (gameState == MainMenu)
 		{
 			screen->CentreScaled("MR. BOUNCE", 40, 10, 10, 0xffffff);
+			screen->CentreScaled(("High score: " + std::to_string(highScore)).c_str(), ScreenHeight - 50, 3, 3, 0xffffff);
 
 			// play button
 			vec4 playButtonBox = { 545, 280, 730, 350 };
@@ -266,9 +282,9 @@ namespace Tmpl8
 			screen->CentreScaled("QUIT", 400, 6, 6, 0xffffff);
 			if (buttonPressed({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w })) Shutdown();
 		}
-		// --------°°°°°°°°°°°°°°°°-------- |
+		// --------~~~~~~~~~~~~~~~~-------- |
 		// ---*--- GAME OVER SCREEN ---*--- |
-		// --------°°°°°°°°°°°°°°°°-------- |
+		// --------~~~~~~~~~~~~~~~~-------- |
 		else if (gameState == Death)
 		{
 			gameOverTimer -= dt;
@@ -284,7 +300,7 @@ namespace Tmpl8
 			else
 			{
 				screen->Clear(0x000000);
-				gameRunning = false;
+				gameState = MainMenu;
 			}
 		}
 		frame++;

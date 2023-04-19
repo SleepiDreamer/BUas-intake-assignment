@@ -40,7 +40,7 @@ namespace Tmpl8
 
 	float calcSpeed(const vec2& _vel);
 
-	vec2 reflectVector(vec2& _vel, const vec2& _normal);
+	vec2 reflectVector(const vec2& _vel, const vec2& _normal);
 
 	float vec2ToAngle(const vec2& _vel);
 
@@ -55,4 +55,8 @@ namespace Tmpl8
 	bool insideRectangle(vec2 _point, vec2 _pos1, vec2 _pos2);
 
 	float roundNumber(float _number, int _dec);
+
+	std::string readNthLine(const std::string& _filename, int _n);
+
+	void writeToFile(const std::string& _filename, int _score);
 }

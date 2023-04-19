@@ -48,6 +48,8 @@ namespace Tmpl8
 		Game(Surface* surface) // constructor
 		{
 			screen = surface;
+			player = new Player({ 0, 0 }, screen, std::move(playerSprite));
+			powerup = new Powerup({ 0, 0 }, screen, std::move(powerupSprite));
 		}
 		~Game() // destructor
 		{
@@ -65,6 +67,7 @@ namespace Tmpl8
 		gameStates gameState = MainMenu;
 
 		int score = 0;
+		int highScore = 0;
 		int frame = 0;
 		float time = 0.0f;
 		float enemySpawnTimer = 0.0f;
@@ -83,9 +86,9 @@ namespace Tmpl8
 		std::unique_ptr<Sprite> heartSprite2 = std::make_unique<Sprite>(new Surface("assets/heart empty.png"), 1);
 		Player* player;
 		std::unique_ptr<Sprite> playerSprite = std::make_unique<Sprite>(new Surface("assets/ball.png"), 1);
-		BulletManager bulletPool = BulletManager(300);
+		BulletManager bulletPool = BulletManager(150);
 		std::shared_ptr<Sprite> bulletSprite = std::make_shared<Sprite>(new Surface("assets/Bullet/bullet.png"), 1);
-		EnemyManager enemyPool = EnemyManager(200);
+		EnemyManager enemyPool = EnemyManager(150);
 		std::shared_ptr<Sprite> enemySprite = std::make_shared<Sprite>(new Surface("assets/ctankbase.tga"), 16);
 		std::unique_ptr<Sprite> powerupSprite = std::make_unique<Sprite>(new Surface("assets/powerup.png"), 1);
 		Powerup* powerup;

@@ -1,6 +1,6 @@
 #include <iostream>
+#include <fstream>
 #include "template.h"
-#include "surface.h"
 #include <cmath>
 #include <random>
 #include <string>
@@ -20,11 +20,11 @@ namespace Tmpl8
 
 	float RotationBetweenPoints(const float x1, const float y1, const float x2, const float y2) // using code from https://www.geeksforgeeks.org/program-find-slope-line/
 	{
-		if (x2 - x1 != 0) {
+		if (x2 - x1 != 0.0f) {
 			if (x1 > x2) return atan((y2 - y1) / (x2 - x1)) + PI;
 			return atan((y2 - y1) / (x2 - x1));
 		}
-		return 1.5 * PI;
+		return 1.5f * PI;
 	}
 
 	float calcDir(const vec2& _vel)
@@ -38,11 +38,11 @@ namespace Tmpl8
 	}
 
 
-	vec2 reflectVector(vec2& _vel, const vec2& _normal)
+	vec2 reflectVector(const vec2& _vel, const vec2& _normal)
 	{
-		vec3 vel = { _vel.x, _vel.y, 0 }; // convert to 3d vector because dot product is only implemented for 3d vectors
-		vec3 normal = { _normal.x, _normal.y, 0 };
-		vec2 result = 		
+		const vec3 vel = { _vel.x, _vel.y, 0 }; // convert to 3d vector because dot product is only implemented for 3d vectors
+		const vec3 normal = { _normal.x, _normal.y, 0 };
+		const vec2 result = 		
 		{ 
 			_vel.x - 2 * normal.x * (dot(normal, vel) / dot(normal, normal)), 
 			_vel.y - 2 * normal.y * (dot(normal, vel) / dot(normal, normal))
@@ -93,5 +93,30 @@ namespace Tmpl8
 		for (int i = 0; i < _dec; i++) mult *= 10;
 		mult /= 10;
 		return std::round(_number * mult) / mult;
+	}
+
+	// adapted from Armen Tsirunyan's answer on https://www.appsloveworld.com/cplus/100/81/getting-the-nth-line-of-a-text-file-in-c
+	std::string readNthLine(const std::string& _filename, int _n)
+	{
+		std::ifstream in(_filename.c_str());
+		std::string s;
+		//for performance
+		s.reserve(300);
+
+		//skip _n lines
+		for (int i = 0; i < _n; ++i)
+			std::getline(in, s);
+
+		std::getline(in, s);
+		in.close();
+		return s;
+	}
+
+	void writeToFile(const std::string& _filename, int _score)
+	{
+		std::fstream file;
+		file.open(_filename, std::ios::out);
+		file << _score;
+		file.close();
 	}
 }

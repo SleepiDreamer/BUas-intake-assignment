@@ -3,57 +3,65 @@
 
 namespace Tmpl8
 {
+	void Player::dash(vec2 _dir)
+	{
+		dashTimer = 0;
+		dashVel = _dir * 500;
+		std::cout << "dashed" << std::endl;
+	}
+
 	void Player::update(float _dt)
 	{
 		// move player
-		pos += vel * _dt;
+		pos += (vel + dashVel) * _dt;
+		dashVel *= std::pow(0.1f, _dt); // dampening
 
 		// screen boundary collisions
 		if (this->getTopLeft().x < 100) // LEFT
 		{
 			pos.x = 100 + size.x * scale / 2;
 			vel = reflectVector(vel, { 1.0f, 0.0f });
+			dashVel = reflectVector(dashVel, { 1.0f, 0.0f });
 		}
 		if (this->getBottomRight().x > ScreenWidth - 100) // RIGHT
 		{
 			pos.x = -100 + ScreenWidth - (size.x * scale / 2);
 			vel = reflectVector(vel, { -1.0f, 0.0f });
+			dashVel = reflectVector(dashVel, { -1.0f, 0.0f });
 		}
 		if (this->getTopLeft().y < 0 + 100) // TOP
 		{
 			pos.y = 100 + size.y * scale / 2;
 			vel = reflectVector(vel, { 0.0f, 1.0f });
+			dashVel = reflectVector(dashVel, { 0.0f, 1.0f });
 		}
 		if (this->getBottomRight().y > ScreenHeight - 100) // BOTTOM
 		{
 			pos.y = -100 + ScreenHeight - (size.y * scale / 2);
 			vel = reflectVector(vel, { 0.0f, -1.0f });
+			dashVel = reflectVector(dashVel, { 0.0f, -1.0f });
 		}
 
 		float angle = vec2ToAngle(vel);
 
-		lastShot += _dt;
+		dashTimer += _dt;
+		lastShotTimer += _dt;
 		invincibility -= _dt;
 		if (invincibility < 0) invincibility = 0;
 	}
 
 	bool Player::playerSubtractHealth()
 	{
-		hp -= 1;
-		if (hp == 0.0f)
-		{
-			return true;
-		}
 		invincibility = 2.0f;
-		return false;
+		return --hp == 0; // check if player is dead
 	}
 
 	void Player::render() const
 	{
-		// TODO: flash player when damaged (invincibility > 0)
 		//sprite->DrawScaled(static_cast<int>(pos.x), static_cast<int>(pos.y), size.x * scale, size.y * scale, screen, false);
 		if (fmod(invincibility, 0.5) < 0.25)
 		{
+			screen->Line(pos.x, pos.y, pos.x + 50 * cos(atan2(vel.y, vel.x)), pos.y + 50 * sin(atan2(vel.y, vel.x)), 0x5df5ff);
 			screen->CircleFull(pos, 0, static_cast<int>(size.x / 2), 0x64b4ff);
 			screen->CircleFull(pos, 20, 25, 0x5df5ff);
 		}
@@ -132,7 +140,7 @@ namespace Tmpl8
 //		}
 //
 //
-//		lastShot += _dt;
+//		lastShotTimer += _dt;
 //	}
 //
 //	void Player::doAnimation(float _dt)

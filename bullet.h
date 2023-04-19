@@ -2,8 +2,6 @@
 #include "surface.h"
 #include "template.h"
 #include "entity.h"
-#include <utility>
-#include <vector>
 
 namespace Tmpl8 {
 	class Bullet : public Entity
@@ -31,7 +29,6 @@ namespace Tmpl8 {
 
 		void update(float _dt);
 
-		
-		void render(Surface* _screen);
+		void render(Surface* _screen) const;
 	};
 }
