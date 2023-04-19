@@ -61,7 +61,8 @@ namespace Tmpl8
 		//sprite->DrawScaled(static_cast<int>(pos.x), static_cast<int>(pos.y), size.x * scale, size.y * scale, screen, false);
 		if (fmod(invincibility, 0.5) < 0.25)
 		{
-			screen->Line(pos.x, pos.y, pos.x + 50 * cos(atan2(vel.y, vel.x)), pos.y + 50 * sin(atan2(vel.y, vel.x)), 0x5df5ff);
+			const vec3 normalizedVel = normalize({vel.x, vel.y, 0});
+			screen->LineClip({pos.x, pos.y}, {pos.x + 2500 * normalizedVel.x, pos.y + 2500 * normalizedVel.y}, {105, 105, ScreenWidth - 105, ScreenHeight - 105}, 0x5df5ff);
 			screen->CircleFull(pos, 0, static_cast<int>(size.x / 2), 0x64b4ff);
 			screen->CircleFull(pos, 20, 25, 0x5df5ff);
 		}

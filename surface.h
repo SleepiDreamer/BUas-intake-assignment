@@ -60,7 +60,8 @@ public:
 	void Print( const char* a_String, int x1, int y1, Pixel color );
 	void PrintScaled(const char* a_String, int x1, int y1, int xscale, int yscale, Pixel color);
 	void Clear( Pixel a_Color );
-	void Line( float x1, float y1, float x2, float y2, Pixel color );
+	void Line( float x1, float y1, float x2, float y2, Pixel color ) const;
+	void LineClip(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const;
 	void Plot( int x, int y, Pixel c );
 	void LoadImage( char* a_File );
 	void CopyTo( Surface* a_Dst, int a_X, int a_Y );
@@ -75,7 +76,7 @@ public:
 	void CentreBar(int y1, int y2, int width, Pixel c) const;
 	void Circle(vec2 _pos, int r, Pixel c);
 	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel c);
-	void Resize( Surface* a_Orig );
+	void Resize( Surface* a_Orig ) const;
 	void DrawView(int x1, int y1, int x2, int y2, Pixel color); // OLD
 	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	bool CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD

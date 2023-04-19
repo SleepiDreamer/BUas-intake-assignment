@@ -158,7 +158,7 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::Resize( Surface* a_Orig )
+	void Surface::Resize( Surface* a_Orig ) const
 	{
 		Pixel* src = a_Orig->GetBuffer(), *dst = m_Buffer;
 		int u, v, owidth = a_Orig->GetWidth(), oheight = a_Orig->GetHeight();
@@ -190,7 +190,7 @@ namespace Tmpl8 {
 		return (((x) < xMin) ? 1 : (((x) > xMax) ? 2 : 0)) + (((y) < yMin) ? 4 : (((y) > yMax) ? 8 : 0));
 	}
 		
-	void Surface::Line( float x1, float y1, float x2, float y2, Pixel c )
+	void Surface::Line( float x1, float y1, float x2, float y2, Pixel c ) const
 	{
 		// clip (Cohen-Sutherland, https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm)
 		const float xmin = 0, ymin = 0, xmax = ScreenWidth - 1, ymax = ScreenHeight - 1;
@@ -223,6 +223,42 @@ namespace Tmpl8 {
 		{
 			*(m_Buffer + (int)x1 + (int)y1 * m_Pitch) = c;
 			x1 += dx, y1 += dy;
+		}
+	}
+
+	void Surface::LineClip(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const
+	{
+		// clip (Cohen-Sutherland, https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm)
+		const float xmin = 0, ymin = 0, xmax = ScreenWidth - 1, ymax = ScreenHeight - 1;
+		int c0 = LineOutCode(_pos1.x, _pos1.y, xmin, xmax, ymin, ymax), c1 = LineOutCode(_pos2.x, _pos2.y, xmin, xmax, ymin, ymax);
+		bool accept = false;
+		while (1)
+		{
+			if (!(c0 | c1)) { accept = true; break; }
+			else if (c0 & c1) break; else
+			{
+				float x = 1.0f, y = 1.0f;
+				const int co = c0 ? c0 : c1;
+				if (co & 8) x = _pos1.x + (_pos2.x - _pos1.x) * (ymax - _pos1.y) / (_pos2.y - _pos1.y), y = ymax;
+				else if (co & 4) x = _pos1.x + (_pos2.x - _pos1.x) * (ymin - _pos1.y) / (_pos2.y - _pos1.y), y = ymin;
+				else if (co & 2) y = _pos1.y + (_pos2.y - _pos1.y) * (xmax - _pos1.x) / (_pos2.x - _pos1.x), x = xmax;
+				else if (co & 1) y = _pos1.y + (_pos2.y - _pos1.y) * (xmin - _pos1.x) / (_pos2.x - _pos1.x), x = xmin;
+				if (co == c0) _pos1.x = x, _pos1.y = y, c0 = LineOutCode(_pos1.x, _pos1.y, xmin, xmax, ymin, ymax);
+				else _pos2.x = x, _pos2.y = y, c1 = LineOutCode(_pos2.x, _pos2.y, xmin, xmax, ymin, ymax);
+			}
+		}
+		if (!accept) return;
+		float b = _pos2.x - _pos1.x;
+		float h = _pos2.y - _pos1.y;
+		float l = fabsf(b);
+		if (fabsf(h) > l) l = fabsf(h);
+		int il = (int)l;
+		float dx = b / l;
+		float dy = h / l;
+		for (int i = 0; i <= il; i++)
+		{
+			if(_pos1.x > _window.x && _pos1.x < _window.z && _pos1.y > _window.y && _pos1.y < _window.w)	*(m_Buffer + (int)_pos1.x + (int)_pos1.y * m_Pitch) = c;
+			_pos1.x += dx, _pos1.y += dy;
 		}
 	}
 
