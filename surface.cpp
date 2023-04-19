@@ -14,10 +14,31 @@ namespace Tmpl8 {
 	char Surface::s_Font[51][5][6];	
 	bool Surface::fontInitialized = false;
 
+	// from HyTap on Discord: https://discord.com/channels/515453022097244160/913396868002762792/1079885233408716850
+	inline Pixel AlphaBlend(Pixel dest, Pixel src, float alpha)
+	{
+		alpha = Clamp(alpha, 0.0f, 1.0f);
+		const unsigned int r1 = (dest & RedMask);
+		const unsigned int g1 = (dest & GreenMask);
+		const unsigned int b1 = (dest & BlueMask);
+
+		const unsigned int r2 = (src & RedMask);
+		const unsigned int g2 = (src & GreenMask);
+		const unsigned int b2 = (src & BlueMask);
+
+		const unsigned int r = alpha * r2 + (1.0f - alpha) * r1;
+		const unsigned int g = alpha * g2 + (1.0f - alpha) * g1;
+		const unsigned int b = alpha * b2 + (1.0f - alpha) * b1;
+
+		const unsigned r3 = (r & RedMask) | (RedMask * (r >> 24));
+		const unsigned g3 = (g & GreenMask) | (GreenMask * (g >> 16));
+		const unsigned b3 = (b & BlueMask) | (BlueMask * (b >> 8));
+		return (r3 + g3 + b3);
+	}
+
 	// -----------------------------------------------------------
 	// True-color surface class implementation
 	// -----------------------------------------------------------
-
 	Surface::Surface( int a_Width, int a_Height, Pixel* a_Buffer, int a_Pitch ) :
 		m_Buffer( a_Buffer ),
 		m_Width( a_Width ),
@@ -35,7 +56,7 @@ namespace Tmpl8 {
 		m_Buffer = static_cast<Pixel*>(MALLOC64( (unsigned int)a_Width * (unsigned int)a_Height * sizeof( Pixel )));
 	}
 
-	Surface::Surface( char* a_File )
+	Surface::Surface( const char* a_File )
 	{
 		FILE* f = fopen( a_File, "rb" );
 		if (!f) 
@@ -49,7 +70,7 @@ namespace Tmpl8 {
 		LoadImage( a_File );
 	}
 
-	void Surface::LoadImage( char* a_File )
+	void Surface::LoadImage( const char* a_File )
 	{
 		FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 		fif = FreeImage_GetFileType( a_File, 0 );
@@ -267,7 +288,7 @@ namespace Tmpl8 {
 		if ((x >= 0) && (y >= 0) && (x < m_Width) && (y < m_Height)) m_Buffer[x + y * m_Pitch] = c;
 	}
 
-	void Surface::Box( int x1, int y1, int x2, int y2, Pixel c )
+	void Surface::Box( int x1, int y1, int x2, int y2, Pixel c)
 	{
 		Line( (float)x1, (float)y1, (float)x2, (float)y1, c );
 		Line( (float)x2, (float)y1, (float)x2, (float)y2, c );
@@ -279,6 +300,7 @@ namespace Tmpl8 {
 	{
 		Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color);
 	}
+
 
 	void Surface::BoxThicc( int x1, int y1, int x2, int y2, int width, Pixel c)
 	{
@@ -293,20 +315,27 @@ namespace Tmpl8 {
 		BoxThicc(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), width, c);
 	}
 
-	void Surface::Bar( int x1, int y1, int x2, int y2, Pixel c ) const
+	void Surface::Bar( int x1, int y1, int x2, int y2, Pixel c, float alpha ) const
 	{
+		x1 = Clamp(x1, 0, m_Width - 1);
+		x2 = Clamp(x2, 0, m_Width - 1);
+		y1 = Clamp(y1, 0, m_Height - 1);
+		y2 = Clamp(y2, 0, m_Height - 1);
 		Pixel* a = x1 + y1 * m_Pitch + m_Buffer;
 		for (int y = y1; y <= y2 && y <= m_Height; y++)
 		{
-			for (int x = 0; x <= (x2 - x1) && y < ScreenHeight ; x++) a[x] = c;
+			for (int x = 0; x <= (x2 - x1) && y < ScreenHeight ; x++)
+			{
+				a[x] = AlphaBlend(a[x], c, alpha);
+			}
 			a += m_Pitch;
 		}
 				
 	}
 
-	void Surface::Bar(vec2 pos1, vec2 pos2, Pixel color) const
+	void Surface::Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha) const
 	{
-		Bar(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color);
+		Bar(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color, alpha);
 	}
 
 	void Surface::CentreBar(int y1, int y2, int width, Pixel c) const

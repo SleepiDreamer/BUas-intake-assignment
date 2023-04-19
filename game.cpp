@@ -11,9 +11,10 @@
 float constexpr POWERUP_DURATION = 6.0f;
 float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
 
-// TODO: transparency
-// TODO: trail behind player
 // TODO: upgrades
+// TODO: enemy death effect
+// TODO: nuke effect
+// TODO: shadows
 
 namespace Tmpl8
 {
@@ -79,9 +80,9 @@ namespace Tmpl8
 	void Game::Shutdown()
 	{
 		// from MAX#2223 in #buas-intake on discord. https://discord.com/channels/515453022097244160/686661689894240277/1095673953734901761. Acquired on 12/04/2023
-		SDL_Event user_event;
-		user_event.type = SDL_QUIT;
-		SDL_PushEvent(&user_event);
+		SDL_Event userEvent;
+		userEvent.type = SDL_QUIT;
+		SDL_PushEvent(&userEvent);
 	}
 
 	// ----------------------------------------------------------- |
@@ -92,9 +93,6 @@ namespace Tmpl8
 		//dt = deltaTime
 		dt = min(dt / 1000.0f, 0.1f); // ms => s and clamp to minimum 10 fps
 		if (powerupType == 4) dt *= 0.5f; // slow motion powerup
-		
-		const int screen_width = screen->GetWidth();
-		const int screen_height = screen->GetHeight();
 
 		// ________~~~~~~~~~________ |
 		// ---*--- Main Game ---*--- |
@@ -103,19 +101,19 @@ namespace Tmpl8
 			// ---*--- MOVEMENT ---*---
 			player->update(dt);
 			player->PointTowards(mousePos);
-			if (player->canDash() && GetAsyncKeyState(0x5a))
+			if (player->canDash() && GetAsyncKeyState(VK_UP))
 			{
 				player->dash( {0, -1} ); // UP
 			}
-			if (player->canDash() && GetAsyncKeyState(0x53))
+			if (player->canDash() && GetAsyncKeyState(VK_DOWN))
 			{
 				player->dash({0, 1}); // DOWN
 			}
-			if (player->canDash() && GetAsyncKeyState(0x51))
+			if (player->canDash() && GetAsyncKeyState(VK_LEFT))
 			{
 				player->dash({-1, 0}); // LEFT
 			}
-			if (player->canDash() && GetAsyncKeyState(0x44))
+			if (player->canDash() && GetAsyncKeyState(VK_RIGHT))
 			{
 				player->dash({1, 0}); // RIGHT
 			}
@@ -123,7 +121,7 @@ namespace Tmpl8
 			// ---*--- ENEMIES ---*---
 			enemyPool.update(player->getPos(), dt);
 			enemySpawnTimer += dt;
-			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.65f;
+			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.4f; // increase spawn rate over time
 			if (enemySpawnTimer > enemySpawnDelay)
 			{
 				spawnEnemy();
@@ -149,7 +147,7 @@ namespace Tmpl8
 			else canShoot = player->canShoot();
 			if (mouseLeftDown && canShoot)
 			{
-				float damage = 10.0f;
+				float damage = 25.0f;
 				if (powerupType == 1) damage *= 3.0f;
 				bulletPool.enable(player->getPos(), player->getDir() * 1000.0f , 1.0f, damage);
 				player->resetShotTimer();
@@ -197,7 +195,7 @@ namespace Tmpl8
 						bulletPool.disable(bullet->getId());
 						powerupSpawnTimer = 0.0f;
 						powerup->consume();
-						powerupType = randint(1, 6);
+						do { powerupType = randint(1, 6); } while (powerupType == 5 && player->getHp() == player->getMaxHp()); // don't heal if already full health
 						switch (powerupType)
 						{
 						case 1: powerupTimer = POWERUP_DURATION; break; // damage
@@ -222,12 +220,11 @@ namespace Tmpl8
 			//backdrop->Draw(screen, 0, 0); // RENDER THIS FIRST!
 			screen->Clear(0x363636);
 			screen->BoxThicc(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e);
-			//screen->PrintScaled(floatToChar(enemySpawnDelay), 10, 10, 2, 2, 0x00ff00); // DEBUG
 			bulletPool.render(screen);
 			enemyPool.render(screen);
 			powerup->render(screen);
 			player->render();
-			screen->PrintScaled(std::to_string(score).c_str(), 10, 10, 5, 5, 0xdddddd);
+			screen->PrintScaled(("Score: " + std::to_string(score)).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)
 			{
 				const float xPos = static_cast<float>(ScreenWidth) / 2.0f + (static_cast<float>(i) - (player->getMaxHp() - 1) / 2.0f) * 80.0f;
@@ -246,7 +243,8 @@ namespace Tmpl8
 			case 5: screen->CentreScaled("Healed", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 6: screen->CentreScaled("Nuked", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			}
-			screen->CentreBar(ScreenHeight - 20, ScreenHeight - 10, static_cast<int>((powerupTimer / POWERUP_DURATION) * 300.0f), 0xffffff);
+			screen->CentreBar(ScreenHeight - 20, ScreenHeight - 10, static_cast<int>(powerupTimer / POWERUP_DURATION * 300.0f), 0xffffff);
+			if (powerupType == 6) screen->Bar(0, 0, ScreenWidth - 1, ScreenHeight - 1, 0xffffff, powerupTimer / POWERUP_MESSAGE_DURATION);
 
 			// ---*--- DEATH MECHANIC ---*---
 			time += dt;
@@ -271,16 +269,41 @@ namespace Tmpl8
 			screen->CentreScaled(("High score: " + std::to_string(highScore)).c_str(), ScreenHeight - 50, 3, 3, 0xffffff);
 
 			// play button
-			vec4 playButtonBox = { 545, 280, 730, 350 };
+			vec4 playButtonBox = { 545, 180, 730, 250 };
 			screen->Box({ playButtonBox.x, playButtonBox.y }, { playButtonBox.z, playButtonBox.w }, 0xffffff);
-			screen->CentreScaled("PLAY", 300, 6, 6, 0xffffff);
+			screen->CentreScaled("PLAY", 200, 6, 6, 0xffffff);
 			if (buttonPressed({ playButtonBox.x, playButtonBox.y }, { playButtonBox.z, playButtonBox.w })) onStart();
+
+			// instructions button
+			vec4 instructionsButtonBox = { 545, 280, 730, 350 };
+			screen->Box({ instructionsButtonBox.x, instructionsButtonBox.y }, { instructionsButtonBox.z, instructionsButtonBox.w }, 0xffffff);
+			screen->CentreScaled("HELP", 300, 6, 6, 0xffffff);
+			if (buttonPressed({ instructionsButtonBox.x, instructionsButtonBox.y }, { instructionsButtonBox.z, instructionsButtonBox.w })) gameState = Instructions;
 
 			// quit button
 			vec4 quitButtonBox = { 545, 380, 730, 450 };
 			screen->Box({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w }, 0xffffff);
 			screen->CentreScaled("QUIT", 400, 6, 6, 0xffffff);
 			if (buttonPressed({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w })) Shutdown();
+
+		}
+		// --------~~~~~~~~~~~~~~~~~~~-------- |
+		// ---*--- INSTRUCTIONS SCREEN ---*--- |
+		// --------~~~~~~~~~~~~~~~~~~~-------- |
+		else if (gameState == Instructions)
+		{
+			screen->Clear(0);
+			screen->PrintScaled("Instructions", 25, 25, 6, 6, 0xffffff);
+			screen->PrintScaled("You move automatically!", 25, 100, 3, 3, 0xffffff);
+			screen->PrintScaled("You must shoot the enemies! They die after 2 hits", 25, 150, 3, 3, 0xffffff);
+			screen->PrintScaled("Powerups spawn randomly on the map. Shoot them to get a surprise!", 25, 200, 3, 3, 0xffffff);
+			screen->PrintScaled("Good luck!", 25, 250, 3, 3, 0xffffff);
+
+			// menu button
+			vec4 menuButtonBox = { 1045, 25, 1230, 95 };
+			screen->Box({ menuButtonBox.x, menuButtonBox.y }, { menuButtonBox.z, menuButtonBox.w }, 0xffffff);
+			screen->PrintScaled("MENU", 1070, 45, 6, 6, 0xffffff);
+			if (buttonPressed({ menuButtonBox.x, menuButtonBox.y }, { menuButtonBox.z, menuButtonBox.w })) { gameState = MainMenu; screen->Clear(0); }
 		}
 		// --------~~~~~~~~~~~~~~~~-------- |
 		// ---*--- GAME OVER SCREEN ---*--- |
@@ -293,9 +316,7 @@ namespace Tmpl8
 				screen->Clear(0);
 				screen->CentreScaled("You Died!", 300, 6, 6, 0xffffff);
 				screen->PrintScaled("Score: ", 460, 500, 6, 6, 0xffffff);
-				const char* scoreChar = stringToCString(std::to_string(score));
-				screen->PrintScaled(scoreChar, 690, 500, 6, 6, 0xffffff);
-				delete[] scoreChar;
+				screen->PrintScaled(std::to_string(score).c_str(), 690, 500, 6, 6, 0xffffff);
 			}
 			else
 			{

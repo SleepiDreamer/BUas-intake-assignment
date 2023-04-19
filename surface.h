@@ -43,7 +43,7 @@ public:
 	// constructor / destructor
 	Surface( int a_Width, int a_Height, Pixel* a_Buffer, int a_Pitch );
 	Surface( int a_Width, int a_Height );
-	Surface( char* a_File );
+	Surface( const char* a_File );
 	~Surface();
 	// member data access
 	Pixel* GetBuffer() { return m_Buffer; }
@@ -63,16 +63,16 @@ public:
 	void Line( float x1, float y1, float x2, float y2, Pixel color ) const;
 	void LineClip(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const;
 	void Plot( int x, int y, Pixel c );
-	void LoadImage( char* a_File );
+	void LoadImage( const char* a_File );
 	void CopyTo( Surface* a_Dst, int a_X, int a_Y );
 	void BlendCopyTo( Surface* a_Dst, int a_X, int a_Y );
 	void ScaleColor( unsigned int a_Scale );
 	void Box( int x1, int y1, int x2, int y2, Pixel color );
-	void Box(vec2 pos1, vec2 pos2, Pixel color);
+	void Box(vec2 pos1, vec2 pos2, Pixel color );
 	void BoxThicc(int x1, int y1, int x2, int y2, int width, Pixel c);
 	void BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c);
-	void Bar( int x1, int y1, int x2, int y2, Pixel color ) const;
-	void Bar(vec2 pos1, vec2 pos2, Pixel color) const;
+	void Bar( int x1, int y1, int x2, int y2, Pixel color, float alpha = 1.0f ) const;
+	void Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha = 1.0f ) const;
 	void CentreBar(int y1, int y2, int width, Pixel c) const;
 	void Circle(vec2 _pos, int r, Pixel c);
 	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel c);

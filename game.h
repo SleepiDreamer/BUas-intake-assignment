@@ -54,6 +54,7 @@ namespace Tmpl8
 		~Game() // destructor
 		{
 			delete player;
+			delete powerup;
 		}
 
 	private:
@@ -63,7 +64,7 @@ namespace Tmpl8
 		bool mouseLeftDown = false;
 		bool iButtonPressed = false;
 
-		enum gameStates { MainMenu, Playing, Death };
+		enum gameStates { MainMenu, Playing, Death, Instructions };
 		gameStates gameState = MainMenu;
 
 		int score = 0;
@@ -79,7 +80,6 @@ namespace Tmpl8
 		float powerupTimer = 0.0f;
 		int powerupType = 0;
 
-		bool gameRunning = false;
 		Sprite* backdrop = new Sprite(new Surface("assets/backdrop.jpg"), 1);
 
 		std::unique_ptr<Sprite> heartSprite = std::make_unique<Sprite>(new Surface("assets/heart.png"), 1);

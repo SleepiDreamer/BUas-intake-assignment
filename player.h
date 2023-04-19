@@ -21,7 +21,7 @@ namespace Tmpl8 {
 		float shotDelay = 0.05f;
 		float scale = 1.0f; // factor to multiply the sprite size with
 		float dashTimer = 0.0f;
-		float dashDelay = 1.0f;
+		float dashDelay = 3.0f;
 
 	public:
         vec2 getTopLeft() override { return { pos.x - size.x * scale / 2, pos.y - size.y * scale / 2 }; }

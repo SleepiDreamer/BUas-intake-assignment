@@ -76,12 +76,6 @@ namespace Tmpl8
 		return _pos.x > 0 && _pos.x < ScreenWidth && _pos.y > 0 && _pos.y < ScreenHeight;
 	}
 
-	char* stringToCString(const std::string& str) {
-		char* charPtr = new char[str.length() + 1];
-		std::strcpy(charPtr, str.c_str()); // TODO: don't use heap
-		return charPtr;
-	}
-
 	bool insideRect(vec2 _point, vec2 _pos1, vec2 _pos2)
 	{
 		return _point.x > _pos1.x && _point.x < _pos2.x && _point.y > _pos1.y && _point.y < _pos2.y;
