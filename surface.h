@@ -59,18 +59,18 @@ public:
 	void CentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color);
 	void Print( const char* a_String, int x1, int y1, Pixel color );
 	void PrintScaled(const char* a_String, int x1, int y1, int xscale, int yscale, Pixel color);
-	void Clear( Pixel a_Color );
+	void Clear( Pixel a_Color ) const;
 	void Line( float x1, float y1, float x2, float y2, Pixel color ) const;
 	void LineClip(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const;
 	void Plot( int x, int y, Pixel c, float _alpha = 1.0f ) const;
 	void LoadImage( const char* a_File );
-	void CopyTo( Surface* a_Dst, int a_X, int a_Y );
-	void BlendCopyTo( Surface* a_Dst, int a_X, int a_Y );
-	void ScaleColor( unsigned int a_Scale );
+	void CopyTo( Surface* a_Dst, int a_X, int a_Y ) const;
+	void BlendCopyTo( Surface* a_Dst, int a_X, int a_Y ) const;
+	void ScaleColor( unsigned int a_Scale ) const;
 	void Box( int x1, int y1, int x2, int y2, Pixel color ) const;
-	void Box( vec2 pos1, vec2 pos2, Pixel color );
-	void BoxThicc(int x1, int y1, int x2, int y2, int width, Pixel c);
-	void BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c);
+	void Box( vec2 pos1, vec2 pos2, Pixel color ) const;
+	void BoxThicc(int x1, int y1, int x2, int y2, int width, Pixel c) const;
+	void BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c) const;
 	void Bar( int x1, int y1, int x2, int y2, Pixel color, float alpha = 1.0f ) const;
 	void Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha = 1.0f ) const;
 	void BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const;
@@ -145,9 +145,9 @@ public:
 	Font();
 	Font( char* a_File, char* a_Chars );
 	~Font();
-	void Print( Surface* a_Target, char* a_Text, int a_X, int a_Y, bool clip = false );
+	void Print( Surface* a_Target, char* a_Text, int a_X, int a_Y, bool clip = false ) const;
 	void Centre( Surface* a_Target, char* a_Text, int a_Y );
-	int Width( char* a_Text );
+	int Width( char* a_Text ) const;
 	int Height() { return m_Surface->GetHeight(); }
 	void YClip( int y1, int y2 ) { m_CY1 = y1; m_CY2 = y2; }
 private:

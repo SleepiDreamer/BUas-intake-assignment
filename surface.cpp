@@ -108,7 +108,7 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::Clear( Pixel a_Color )
+	void Surface::Clear( Pixel a_Color ) const
 	{
 		int s = m_Width * m_Height;
 		for ( int i = 0; i < s; i++ ) m_Buffer[i] = a_Color;
@@ -301,13 +301,13 @@ namespace Tmpl8 {
 		Line( (float)x1, (float)y1, (float)x1, (float)y2, c );
 	}
 
-	void Surface::Box(vec2 pos1, vec2 pos2, Pixel color)
+	void Surface::Box(vec2 pos1, vec2 pos2, Pixel color) const
 	{
 		Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color);
 	}
 
 
-	void Surface::BoxThicc( int x1, int y1, int x2, int y2, int width, Pixel c)
+	void Surface::BoxThick( int x1, int y1, int x2, int y2, int width, Pixel c) const
 	{
 		for (int i = 0; i < width; i++)
 		{
@@ -315,9 +315,9 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c)
+	void Surface::BoxThick(vec2 pos1, vec2 pos2, int width, Pixel c) const
 	{
-		BoxThicc(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), width, c);
+		BoxThick(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), width, c);
 	}
 
 	void Surface::Bar( int x1, int y1, int x2, int y2, Pixel c, float alpha ) const
@@ -445,7 +445,7 @@ namespace Tmpl8 {
 		return 0;
 	}
 
-	void Surface::CopyTo( Surface* a_Dst, int a_X, int a_Y )
+	void Surface::CopyTo( Surface* a_Dst, int a_X, int a_Y ) const
 	{
 		Pixel* dst = a_Dst->GetBuffer();
 		Pixel* src = m_Buffer;
@@ -475,7 +475,7 @@ namespace Tmpl8 {
 	}
 
 
-	void Surface::BlendCopyTo( Surface* a_Dst, int a_X, int a_Y )
+	void Surface::BlendCopyTo( Surface* a_Dst, int a_X, int a_Y ) const
 	{
 		Pixel* dst = a_Dst->GetBuffer();
 		Pixel* src = m_Buffer;
@@ -571,7 +571,7 @@ namespace Tmpl8 {
 		for ( i = 0; i < 50; i++ ) s_Transl[(unsigned char)c[i]] = i;
 	}
 
-	void Surface::ScaleColor( unsigned int a_Scale )
+	void Surface::ScaleColor( unsigned int a_Scale ) const
 	{
 		int s = m_Pitch * m_Height;
 		for ( int i = 0; i < s; i++ )
@@ -749,7 +749,7 @@ namespace Tmpl8 {
 		delete m_Offset;
 	}
 
-	int Font::Width( char* a_Text )
+	int Font::Width( char* a_Text ) const
 	{
 		int w = 0;
 		unsigned int i;
@@ -767,7 +767,7 @@ namespace Tmpl8 {
 		Print( a_Target, a_Text, x, a_Y );
 	}
 	 
-	void Font::Print( Surface* a_Target, char* a_Text, int a_X, int a_Y, bool clip )
+	void Font::Print( Surface* a_Target, char* a_Text, int a_X, int a_Y, bool clip ) const
 	{
 		Pixel* b = a_Target->GetBuffer() + a_X + a_Y * a_Target->GetPitch();
 		Pixel* s = m_Surface->GetBuffer();

@@ -128,7 +128,7 @@ namespace Tmpl8
 				enemySpawnTimer = 0.0f;
 			}
 			
-			if (GetAsyncKeyState(0x49)) // DEBUG: spawn enemy when 'i' is pressed
+			if (GetAsyncKeyState(0x49)) // DEBUG: spawn enemy manually when 'i' is pressed
 			{
 				if (!iButtonPressed)
 				{
@@ -228,7 +228,7 @@ namespace Tmpl8
 			screen->BarShadow({ 100 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, 105 + 5 }, 10.0f, 0.15f); // top red line shadows
 			screen->BarShadow({ ScreenWidth - 105 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // right red line shadows
 			screen->BarShadow({ 100 - 5, ScreenHeight - 105 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // bottom red line shadows
-			screen->BoxThicc(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e); // red line
+			screen->BoxThick(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e); // red line
 			powerup->render(screen);
 			bulletPool.render(screen);
 			enemyPool.render(screen);
