@@ -69,8 +69,8 @@ public:
 	void ScaleColor( unsigned int a_Scale ) const;
 	void Box( int x1, int y1, int x2, int y2, Pixel color ) const;
 	void Box( vec2 pos1, vec2 pos2, Pixel color ) const;
-	void BoxThicc(int x1, int y1, int x2, int y2, int width, Pixel c) const;
-	void BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c) const;
+	void BoxThick(int x1, int y1, int x2, int y2, int width, Pixel c) const;
+	void BoxThick(vec2 pos1, vec2 pos2, int width, Pixel c) const;
 	void Bar( int x1, int y1, int x2, int y2, Pixel color, float alpha = 1.0f ) const;
 	void Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha = 1.0f ) const;
 	void BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const;
