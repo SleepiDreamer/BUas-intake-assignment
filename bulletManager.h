@@ -21,7 +21,7 @@ namespace Tmpl8 {
 
 		std::vector<Bullet*> getPool() { return pool; }
 
-		void render(Surface* _screen);
+		void render(Surface* _screen) const;
 		void update(vec2 _playerPos, float _dt);
 		void clear();
 		void collisionCheck(Bullet* _bullet, float _distance);

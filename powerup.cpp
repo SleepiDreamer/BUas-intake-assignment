@@ -43,11 +43,15 @@ namespace Tmpl8
         if (active) {
             /*screen->CircleFull(pos, 0, static_cast<int>(scale * size.x / 2.0f), 0xffa071);
             screen->CircleFull(pos, scale * 25, static_cast<int>(scale * size.x / 2.0f), 0xfedd9e);*/
-            screen->Bar(pos * scale- size.x / 2, pos * scale+ size.x / 2, 0xffa071);
-            screen->BoxThicc(pos - size.x / 2, pos + size.x / 2, 5, 0xfedd9e);
-            screen->PrintScaled("?", pos.x - 15, pos.y - 12, 5, 5, 0xffffff);
-            const float barWidth = lifetime * 10;
-            screen->Bar(pos.x - barWidth / 2, getBottomRight().y + 10, pos.x + barWidth / 2, getBottomRight().y + 20, 0xffffff);
+            screen->BarShadow({ getTopLeft().x - 5, getTopLeft().y + 5 }, { getBottomRight().x - 5, getBottomRight().y + 5 }, 10.0f, 0.2f);
+        	const float barWidth = lifetime * 10;
+            screen->BarShadow({ pos.x - barWidth / 2 - 5, getBottomRight().y + 15 }, { pos.x + barWidth / 2 - 5, getBottomRight().y + 25 }, 10.0f, 0.2f);
+        	screen->Bar(pos.x - barWidth / 2, getBottomRight().y + 10, pos.x + barWidth / 2, getBottomRight().y + 20, 0xffffff); // lifetime
+        	screen->Bar(pos * scale- size.x / 2, pos * scale+ size.x / 2, 0xffa071); // body
+            screen->BoxThicc(pos - size.x / 2, pos + size.x / 2, 5, 0xfedd9e); // outline
+            screen->PrintScaled("?", pos.x - 15, pos.y - 12, 5, 5, 0xffffff); // question mark
+            
+            
         }
 	}
 };

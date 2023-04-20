@@ -6,6 +6,8 @@
 #include <string>
 #include <charconv>
 
+#define HYPOT(x, y) sqrt((x) * (x) + (y) * (y))
+
 namespace Tmpl8
 {
 	int nthDigit(const int number, const int n)
@@ -112,5 +114,30 @@ namespace Tmpl8
 		file.open(_filename, std::ios::out);
 		file << _score;
 		file.close();
+	}
+
+	//https://codereview.stackexchange.com/questions/175566/compute-shortest-distance-between-point-and-a-rectangle
+	float distanceToRect(double x, double y, double x_min, double y_min, double x_max, double y_max)
+	{
+		if (x < x_min) {
+			if (y < y_min) return HYPOT(x_min - x, y_min - y);
+			if (y <= y_max) return x_min - x;
+			return HYPOT(x_min - x, y_max - y);
+		}
+		else if (x <= x_max) {
+			if (y < y_min) return y_min - y;
+			if (y <= y_max) return 0;
+			return y - y_max;
+		}
+		else {
+			if (y < y_min) return HYPOT(x_max - x, y_min - y);
+			if (y <= y_max) return x - x_max;
+			return HYPOT(x_max - x, y_max - y);
+		}
+	}
+
+	float distanceToRect(vec2 _point, vec2 _pos1, vec2 _pos2)
+	{
+		return distanceToRect(static_cast<int>(_point.x), static_cast<int>(_point.y), static_cast<int>(_pos1.x), static_cast<int>(_pos1.y), static_cast<int>(_pos2.x), static_cast<int>(_pos2.y));
 	}
 }

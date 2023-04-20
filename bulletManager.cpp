@@ -40,7 +40,7 @@ namespace Tmpl8
     	n_active--;
     }
     
-    void BulletManager::render(Surface* _screen)
+    void BulletManager::render(Surface* _screen) const
     {
         for (int i = 0; i < n_active; i++)
         {

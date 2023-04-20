@@ -46,11 +46,11 @@ public:
 	Surface( const char* a_File );
 	~Surface();
 	// member data access
-	Pixel* GetBuffer() { return m_Buffer; }
+	Pixel* GetBuffer() const { return m_Buffer; }
 	void SetBuffer( Pixel* a_Buffer ) { m_Buffer = a_Buffer; }
-	int GetWidth() { return m_Width; }
-	int GetHeight() { return m_Height; }
-	int GetPitch() { return m_Pitch; }
+	int GetWidth() const { return m_Width; }
+	int GetHeight() const { return m_Height; }
+	int GetPitch() const { return m_Pitch; }
 	void SetPitch( int a_Pitch ) { m_Pitch = a_Pitch; }
 	// Special operations
 	void InitCharset();
@@ -62,22 +62,24 @@ public:
 	void Clear( Pixel a_Color );
 	void Line( float x1, float y1, float x2, float y2, Pixel color ) const;
 	void LineClip(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const;
-	void Plot( int x, int y, Pixel c );
+	void Plot( int x, int y, Pixel c, float _alpha = 1.0f ) const;
 	void LoadImage( const char* a_File );
 	void CopyTo( Surface* a_Dst, int a_X, int a_Y );
 	void BlendCopyTo( Surface* a_Dst, int a_X, int a_Y );
 	void ScaleColor( unsigned int a_Scale );
-	void Box( int x1, int y1, int x2, int y2, Pixel color );
-	void Box(vec2 pos1, vec2 pos2, Pixel color );
+	void Box( int x1, int y1, int x2, int y2, Pixel color ) const;
+	void Box( vec2 pos1, vec2 pos2, Pixel color );
 	void BoxThicc(int x1, int y1, int x2, int y2, int width, Pixel c);
 	void BoxThicc(vec2 pos1, vec2 pos2, int width, Pixel c);
 	void Bar( int x1, int y1, int x2, int y2, Pixel color, float alpha = 1.0f ) const;
 	void Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha = 1.0f ) const;
+	void BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const;
 	void CentreBar(int y1, int y2, int width, Pixel c) const;
-	void Circle(vec2 _pos, int r, Pixel c);
-	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel c);
+	void Circle(vec2 _pos, int _r, Pixel _c) const;
+	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel _c, float _alpha = 1.0f) const;
+	void CircleShadow(vec2 _pos, float _r, float _alpha) const;
 	void Resize( Surface* a_Orig ) const;
-	void DrawView(int x1, int y1, int x2, int y2, Pixel color); // OLD
+	void DrawView(int x1, int y1, int x2, int y2, Pixel color) const; // OLD
 	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	bool CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	int Visibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD

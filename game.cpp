@@ -10,11 +10,11 @@
 
 float constexpr POWERUP_DURATION = 6.0f;
 float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
+unsigned int constexpr BG_COLOR = 0x363636;
+unsigned int constexpr MENU_BG_COLOR = 0x000000;
 
 // TODO: upgrades
 // TODO: enemy death effect
-// TODO: nuke effect
-// TODO: shadows
 
 namespace Tmpl8
 {
@@ -121,7 +121,7 @@ namespace Tmpl8
 			// ---*--- ENEMIES ---*---
 			enemyPool.update(player->getPos(), dt);
 			enemySpawnTimer += dt;
-			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.4f; // increase spawn rate over time
+			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.25f; // increase spawn rate over time
 			if (enemySpawnTimer > enemySpawnDelay)
 			{
 				spawnEnemy();
@@ -139,6 +139,11 @@ namespace Tmpl8
 			else
 			{
 				iButtonPressed = false;
+			}
+			if (GetAsyncKeyState(0x4F)) // DEBUG: reset high score when 'o' is pressed
+			{
+				writeToFile("data.txt", 0);
+				highScore = 0;
 			}
 
 			// ---*--- BULLETS ---*---
@@ -218,11 +223,15 @@ namespace Tmpl8
 
 			// ---*--- RENDERING ---*---
 			//backdrop->Draw(screen, 0, 0); // RENDER THIS FIRST!
-			screen->Clear(0x363636);
-			screen->BoxThicc(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e);
+			screen->Clear(BG_COLOR);
+			screen->BarShadow({ 100 - 5, 100 + 5 }, { 105 - 5, ScreenHeight - 100 + 5}, 10.0f, 0.15f); // left red line shadows
+			screen->BarShadow({ 100 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, 105 + 5 }, 10.0f, 0.15f); // top red line shadows
+			screen->BarShadow({ ScreenWidth - 105 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // right red line shadows
+			screen->BarShadow({ 100 - 5, ScreenHeight - 105 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // bottom red line shadows
+			screen->BoxThicc(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e); // red line
+			powerup->render(screen);
 			bulletPool.render(screen);
 			enemyPool.render(screen);
-			powerup->render(screen);
 			player->render();
 			screen->PrintScaled(("Score: " + std::to_string(score)).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)
@@ -265,6 +274,7 @@ namespace Tmpl8
 		// --------~~~~~~~~~~~-------- |
 		else if (gameState == MainMenu)
 		{
+			screen->Clear(MENU_BG_COLOR);
 			screen->CentreScaled("MR. BOUNCE", 40, 10, 10, 0xffffff);
 			screen->CentreScaled(("High score: " + std::to_string(highScore)).c_str(), ScreenHeight - 50, 3, 3, 0xffffff);
 
@@ -292,7 +302,7 @@ namespace Tmpl8
 		// --------~~~~~~~~~~~~~~~~~~~-------- |
 		else if (gameState == Instructions)
 		{
-			screen->Clear(0);
+			screen->Clear(MENU_BG_COLOR);
 			screen->PrintScaled("Instructions", 25, 25, 6, 6, 0xffffff);
 			screen->PrintScaled("You move automatically!", 25, 100, 3, 3, 0xffffff);
 			screen->PrintScaled("You must shoot the enemies! They die after 2 hits", 25, 150, 3, 3, 0xffffff);
@@ -313,14 +323,14 @@ namespace Tmpl8
 			gameOverTimer -= dt;
 			if (gameOverTimer >= 0.0f)
 			{
-				screen->Clear(0);
+				screen->Clear(MENU_BG_COLOR);
 				screen->CentreScaled("You Died!", 300, 6, 6, 0xffffff);
 				screen->PrintScaled("Score: ", 460, 500, 6, 6, 0xffffff);
 				screen->PrintScaled(std::to_string(score).c_str(), 690, 500, 6, 6, 0xffffff);
 			}
 			else
 			{
-				screen->Clear(0x000000);
+				screen->Clear(MENU_BG_COLOR);
 				gameState = MainMenu;
 			}
 		}

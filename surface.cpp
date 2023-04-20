@@ -15,8 +15,10 @@ namespace Tmpl8 {
 	bool Surface::fontInitialized = false;
 
 	// from HyTap on Discord: https://discord.com/channels/515453022097244160/913396868002762792/1079885233408716850
-	inline Pixel AlphaBlend(Pixel dest, Pixel src, float alpha)
+	// modified to be faster
+	Pixel AlphaBlend(Pixel dest, Pixel src, float alpha)
 	{
+		if (alpha == 1.0f) return src;
 		alpha = Clamp(alpha, 0.0f, 1.0f);
 		const unsigned int r1 = (dest & RedMask);
 		const unsigned int g1 = (dest & GreenMask);
@@ -283,12 +285,15 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::Plot( int x, int y, Pixel c )
+	void Surface::Plot( int x, int y, Pixel c, float _alpha ) const
 	{ 
-		if ((x >= 0) && (y >= 0) && (x < m_Width) && (y < m_Height)) m_Buffer[x + y * m_Pitch] = c;
+		if ((x >= 0) && (y >= 0) && (x < m_Width) && (y < m_Height))
+		{
+			m_Buffer[x + y * m_Pitch] = AlphaBlend(m_Buffer[x + y * m_Pitch], c, _alpha);
+		}
 	}
 
-	void Surface::Box( int x1, int y1, int x2, int y2, Pixel c)
+	void Surface::Box( int x1, int y1, int x2, int y2, Pixel c) const
 	{
 		Line( (float)x1, (float)y1, (float)x2, (float)y1, c );
 		Line( (float)x2, (float)y1, (float)x2, (float)y2, c );
@@ -338,6 +343,24 @@ namespace Tmpl8 {
 		Bar(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color, alpha);
 	}
 
+	void Surface::BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const
+	{
+		const vec2 pos1 = _pos1 - _r; // top left bound
+		const vec2 pos2 = _pos2 + _r; // bottom right bound
+		for (int x = pos1.x; x < pos2.x; x++)
+		{
+			for (int y = pos1.y; y < pos2.y; y++)
+			{
+				const float dist = distanceToRect({static_cast<float>(x), static_cast<float>(y)}, _pos1, _pos2);
+				const float shadowAlpha = 1 - (dist / _r);
+				if (dist <= _r)
+				{
+					Plot(x, y, 0x000000, shadowAlpha * _alpha);
+				}
+			}
+		}
+	}
+
 	void Surface::CentreBar(int y1, int y2, int width, Pixel c) const
 	{
 		const int x1 = m_Width / 2 - width / 2;
@@ -351,34 +374,52 @@ namespace Tmpl8 {
 
 	}
 
-	void Surface::Circle( vec2 _pos, int r, Pixel c )
+	void Surface::Circle( vec2 _pos, int _r, Pixel _c ) const
 	{
 		const float steps = 360;
 		const float precision = 2 * PI / steps;
 		for (float i = 0; i < 2 * PI; i += precision)
 		{
-			Plot(static_cast<int>(_pos.x + cos(i)) * r, static_cast<int>(_pos.y + sin(i)) * r, c);
+			Plot(static_cast<int>(_pos.x + cos(i)) * _r, static_cast<int>(_pos.y + sin(i)) * _r, _c);
 		}
 	}
 
-	void Surface::CircleFull( vec2 _pos, int _rMin, int _rMax, Pixel c )
+	void Surface::CircleFull( vec2 _pos, int _rMin, int _rMax, Pixel c, float _alpha ) const
 	{
-		vec2 pos1 = _pos - static_cast<float>(_rMax); // top left bound
-		vec2 pos2 = _pos + static_cast<float>(_rMax); // bottom right bound
+		const vec2 pos1 = _pos - static_cast<float>(_rMax); // top left bound
+		const vec2 pos2 = _pos + static_cast<float>(_rMax); // bottom right bound
 		for (int x = pos1.x; x < pos2.x; x++)
 		{
 			for (int y = pos1.y; y < pos2.y; y++)
 			{
-				float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, _pos);
+				const float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, _pos);
 				if (dist <= _rMax && dist >= _rMin)
 				{
-					Plot(x, y, c);
+					Plot(x, y, c, _alpha);
 				}
 			}
 		}
 	}
 
-	void Surface::DrawView(int x1, int y1, int x2, int y2, Pixel color)
+	void Surface::CircleShadow(vec2 _pos, float _r, float _alpha) const
+	{
+		const vec2 pos1 = _pos - _r; // top left bound
+		const vec2 pos2 = _pos + _r; // bottom right bound
+		for (int x = pos1.x; x < pos2.x; x++)
+		{
+			for (int y = pos1.y; y < pos2.y; y++)
+			{
+				const float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, _pos);
+				const float shadowAlpha = 1 - (dist / _r);
+				if (dist <= _r)
+				{
+					Plot(x, y, 0x000000, shadowAlpha * _alpha);
+				}
+			}
+		}
+	}
+
+	void Surface::DrawView(int x1, int y1, int x2, int y2, Pixel color) const
 	{
 		Bar(x1, 0, x2, y1, color);
 		Bar(x1, y2, x2, ScreenHeight, color);
