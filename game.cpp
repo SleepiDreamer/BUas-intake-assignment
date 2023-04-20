@@ -143,7 +143,7 @@ namespace Tmpl8
 			if (GetAsyncKeyState(0x4F)) // DEBUG: reset high score when 'o' is pressed
 			{
 				writeToFile("data.txt", 0);
-				highScore = 0;
+				highScore = 0; 
 			}
 
 			// ---*--- BULLETS ---*---
