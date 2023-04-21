@@ -9,7 +9,7 @@ namespace Tmpl8
     {
         //if (distanceBetween(_bullet->getPos(), pos) < hitboxSize * scale + _bullet->getSize().x / 2)
         // if inside hitbox
-        if (_bullet->getPos().x > pos.x - size.x / 2 && _bullet->getPos().x < pos.x + size.x / 2 && _bullet->getPos().y > pos.y - size.y / 2 && _bullet->getPos().y < pos.y + size.y / 2)
+        if (_bullet->getPos().x > pos.x - size.x / 2 && _bullet->getPos().x < pos.x + size.x / 2 + _bullet->getHitboxSize() && _bullet->getPos().y > pos.y - size.y / 2 && _bullet->getPos().y < pos.y + size.y / 2 + _bullet->getHitboxSize())
     	{
             hp -= _bullet->getDamage();
             if (hp <= 0)

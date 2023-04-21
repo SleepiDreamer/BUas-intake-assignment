@@ -440,8 +440,6 @@ namespace Tmpl8 {
 	{
 		if (!(x1 >= bx2 || x2 <= bx1 || y1 >= by2 || y2 <= by1) && !(x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2)) return 1;
 		if (x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2) return 2;
-		//if (!CheckFullVisibility(x1, y1, x2, y2, bx1, by1, bx2, by2) && CheckVisibility(x1, y1, x2, y2, bx1, by1, bx2, by2)) return 1;
-		
 		return 0;
 	}
 

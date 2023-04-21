@@ -14,7 +14,6 @@ unsigned int constexpr BG_COLOR = 0x363636;
 unsigned int constexpr MENU_BG_COLOR = 0x000000;
 
 // TODO: upgrades?
-// TODO: fix nuke effect with particles
 
 namespace Tmpl8
 {
@@ -212,7 +211,7 @@ namespace Tmpl8
 						case 3: powerupTimer = POWERUP_DURATION; break; // invincibility
 						case 4: powerupTimer = POWERUP_DURATION; break; // speed
 						case 5: powerupTimer = POWERUP_MESSAGE_DURATION; player->setHp(min(player->getHp() + 1, 3)); break; // health
-						case 6: powerupTimer = POWERUP_MESSAGE_DURATION; enemyPool.clear(); score += enemyPool.getActiveEnemies() * 10; break; // nuke
+						case 6: powerupTimer = POWERUP_MESSAGE_DURATION; particlePool.clear(); enemyPool.clear(); score += enemyPool.getActiveEnemies() * 10; break; // nuke
 						}
 						score += 10;
 						stop = true;

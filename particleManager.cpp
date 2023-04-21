@@ -20,6 +20,7 @@ namespace Tmpl8
         element->setVel(_vel);
         element->setSize(_scale);
         element->setLifetime(_lifetime);
+        element->setScale(_scale);
     }
 
     void ParticleManager::disable(int _id)
@@ -73,11 +74,12 @@ namespace Tmpl8
 
     void ParticleManager::enemyDied(vec2 _pos)
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 5; i++)
         {
 	        const float angle = randfloat(0, 2 * PI);
-			const vec2 vel = { cos(angle) * 175.0f, sin(angle) * 175.0f };
-            enable(_pos, vel, 1.0f, 3.0f);
+			vec2 vel = { cos(angle), sin(angle) };
+            vel *= randfloat(150.0f, 500.0f);
+            enable(_pos, vel, randfloat(0.75f, 1.25f), randfloat(1.5f, 2.5f));
         }
     }
 }

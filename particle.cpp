@@ -8,7 +8,7 @@ namespace Tmpl8
 	void Particle::update(float _dt)
 	{
 		pos += vel * _dt;
-		vel *= pow(0.1f, _dt); // dampening
+		vel *= pow(0.00015f, _dt); // dampening
 		lifetime -= _dt;
 	}
 
