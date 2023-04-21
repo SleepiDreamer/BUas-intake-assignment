@@ -57,13 +57,13 @@ public:
 	// Special operations
 	void InitCharset();
 	void SetChar( int c, char* c1, char* c2, char* c3, char* c4, char* c5 );
-	void Centre( const char* a_String, int y1, Pixel color );
-	void CentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color);
 	void Print( const char* a_String, int x1, int y1, Pixel color );
 	void PrintScaled(const char* a_String, int x1, int y1, int xscale, int yscale, Pixel color);
+	void PrintCentre( const char* a_String, int y1, Pixel color );
+	void PrintCentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color);
 	void Clear( Pixel a_Color ) const;
 	void Line( float x1, float y1, float x2, float y2, Pixel color ) const;
-	void LineClip(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const;
+	void LineClipped(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const;
 	void Plot( int x, int y, Pixel c, float _alpha = 1.0f ) const;
 	void LoadImage( const char* a_File );
 	void CopyTo( Surface* a_Dst, int a_X, int a_Y ) const;
@@ -76,16 +76,16 @@ public:
 	void Bar( int x1, int y1, int x2, int y2, Pixel color, float alpha = 1.0f ) const;
 	void Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha = 1.0f ) const;
 	void BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const;
-	void CentreBar(int y1, int y2, int width, Pixel c) const;
+	void BarCentre(int y1, int y2, int width, Pixel c) const;
 	void Circle(vec2 _pos, int _r, Pixel _c) const;
 	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel _c, float _alpha = 1.0f) const;
 	void CircleShadow(vec2 _pos, float _r, float _alpha) const;
-	void Resize( Surface* a_Orig ) const;
+	void Vignette(float _strength) const;
 	void DrawView(int x1, int y1, int x2, int y2, Pixel color) const; // OLD
 	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	bool CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	int Visibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
-	void Vignette(float _strength);
+	void Resize( Surface* a_Orig ) const;
 private:
 	// Attributes
 	Pixel* m_Buffer{nullptr};	

@@ -1,21 +1,11 @@
 #pragma once
 #include <iostream>
 #include "template.h"
-#include "surface.h"
 
 namespace Tmpl8
 {
-	/**
-	 * \brief returns the nth digit of an integer
-	 * \param number  the number you want to use
-	 * \param n  which digit to return
-	 * \return digit "n" of "number"
-	 */
 	int nthDigit(const int number, const int n);
 
-	/**
-	 * \return the distance between p1 and p2 (float)
-	 */
 	float distanceBetween(const float x1, const float y1, const float x2, const float y2);
 	inline float distanceBetween(const vec2& pos1, const vec2& pos2)
 	{

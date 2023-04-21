@@ -15,7 +15,7 @@ namespace Tmpl8 {
 	bool Surface::fontInitialized = false;
 
 	// from HyTap on Discord: https://discord.com/channels/515453022097244160/913396868002762792/1079885233408716850
-	// modified to be faster
+	// slightly modified to be faster
 	Pixel AlphaBlend(Pixel dest, Pixel src, float alpha)
 	{
 		if (alpha == 1.0f) return src;
@@ -114,18 +114,13 @@ namespace Tmpl8 {
 		for ( int i = 0; i < s; i++ ) m_Buffer[i] = a_Color;
 	}
 
-	void Surface::Centre( const char* a_String, int y1, Pixel color )
-	{
-		int x = (m_Width - (int)strlen( a_String ) * 6) / 2;
-		Print( a_String, x, y1, color );
-	}
-
-	void Surface::CentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color)
-	{
-		int x = (m_Width - (int)strlen(a_String) * 6 * xscale) / 2;
-		PrintScaled(a_String, x, y1, xscale, yscale, color);
-	}
-
+	/**
+	 * \brief Draws text to the surface
+	 * \param a_String text to draw
+	 * \param x1 top left x coordinate
+	 * \param y1 top left y coordinate
+	 * \param color color of the text
+	 */
 	void Surface::Print( const char* a_String, int x1, int y1, Pixel color )
 	{
 		if (!fontInitialized) 
@@ -146,6 +141,15 @@ namespace Tmpl8 {
 		}
 	}
 
+	/**
+	 * \brief Draws text to the surface with a given size
+	 * \param a_String text to display
+	 * \param x1 top left x coordinate
+	 * \param y1 top left y coordinate
+	 * \param xscale horizontal scale/stretch
+	 * \param yscale vertical scale/stretch
+	 * \param color color of the text
+	 */
 	void Surface::PrintScaled(const char* a_String, int x1, int y1, int xscale, int yscale, Pixel color)
 	{
 		if (x1 < 0 || y1 < 0 || x1 + static_cast<int>(strlen(a_String)) * 6 * xscale > m_Width || y1 + 6 * yscale > m_Height)
@@ -181,6 +185,32 @@ namespace Tmpl8 {
 		}
 	}
 
+	/**
+	 * \brief Draws text to the surface, in the middle of the screen
+	 * \param a_String text to display
+	 * \param y1 top y coordinate
+	 * \param color color of the text
+	 */
+	void Surface::PrintCentre( const char* a_String, int y1, Pixel color )
+	{
+		int x = (m_Width - (int)strlen( a_String ) * 6) / 2;
+		Print( a_String, x, y1, color );
+	}
+
+	/**
+	 * \brief Draws text to the surface, in the middle of the screen, with a given size
+	 * \param a_String text to display
+	 * \param y1 top y coordinate
+	 * \param xscale horizontal scale/stretch
+	 * \param yscale vertical scale/stretch
+	 * \param color color of the text
+	 */
+	void Surface::PrintCentreScaled(const char* a_String, int y1, int xscale, int yscale, Pixel color)
+	{
+		int x = (m_Width - (int)strlen(a_String) * 6 * xscale) / 2;
+		PrintScaled(a_String, x, y1, xscale, yscale, color);
+	}
+
 	void Surface::Resize( Surface* a_Orig ) const
 	{
 		Pixel* src = a_Orig->GetBuffer(), *dst = m_Buffer;
@@ -212,7 +242,15 @@ namespace Tmpl8 {
 	{
 		return (((x) < xMin) ? 1 : (((x) > xMax) ? 2 : 0)) + (((y) < yMin) ? 4 : (((y) > yMax) ? 8 : 0));
 	}
-		
+
+	/**
+	 * \brief Draws a line between the two given points
+	 * \param x1  start x-coordinate of the line
+	 * \param y1  start y-coordinate of the line
+	 * \param x2  end x-coordinate of the line
+	 * \param y2  end y-coordinate of the line
+	 * \param c color of the line
+	 */
 	void Surface::Line( float x1, float y1, float x2, float y2, Pixel c ) const
 	{
 		// clip (Cohen-Sutherland, https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm)
@@ -249,7 +287,14 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::LineClip(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const
+	/**
+	 * \brief Draws a line but only the pixels inside the given window
+	 * \param _pos1 top left corner of the line
+	 * \param _pos2 bottom right corner of the line
+	 * \param _window top left and bottom right corner of the window
+	 * \param c 
+	 */
+	void Surface::LineClipped(vec2 _pos1, vec2 _pos2, vec4 _window, Pixel c) const
 	{
 		// clip (Cohen-Sutherland, https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm)
 		const float xmin = 0, ymin = 0, xmax = ScreenWidth - 1, ymax = ScreenHeight - 1;
@@ -285,6 +330,13 @@ namespace Tmpl8 {
 		}
 	}
 
+	/**
+	 * \brief Draws a single pixel to the surface
+	 * \param x x coordinate of pixel
+	 * \param y y coordinate of pixel
+	 * \param c color of pixel
+	 * \param _alpha opacity of pixel, default is 1.0f
+	 */
 	void Surface::Plot( int x, int y, Pixel c, float _alpha ) const
 	{ 
 		if ((x >= 0) && (y >= 0) && (x < m_Width) && (y < m_Height))
@@ -301,6 +353,12 @@ namespace Tmpl8 {
 		Line( (float)x1, (float)y1, (float)x1, (float)y2, c );
 	}
 
+	/**
+	 * \brief Draws a non-filled in rectangle
+	 * \param pos1 top left corner of the box
+	 * \param pos2 bottom right corner of the box
+	 * \param color color of the box
+	 */
 	void Surface::Box(vec2 pos1, vec2 pos2, Pixel color) const
 	{
 		Box(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color);
@@ -315,6 +373,13 @@ namespace Tmpl8 {
 		}
 	}
 
+	/**
+	 * \brief Draws a box (non-filled in rectangle) with a given thickness
+	 * \param pos1 top left corner of the box
+	 * \param pos2 bottom right corner of the box
+	 * \param width thickness of the box
+	 * \param c color of the box
+	 */
 	void Surface::BoxThick( vec2 pos1, vec2 pos2, int width, Pixel c ) const
 	{
 		BoxThick(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), width, c);
@@ -338,11 +403,25 @@ namespace Tmpl8 {
 				
 	}
 
+	/**
+	 * \brief Draws a filled-in rectangle
+	 * \param pos1 top left corner of the bar
+	 * \param pos2 bottom right corner of the bar
+	 * \param color color of the bar
+	 * \param alpha opacity of the bar, default is 1.0f
+	 */
 	void Surface::Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha) const
 	{
 		Bar(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), color, alpha);
 	}
 
+	/**
+	 * \brief Draws a shadow for a bar
+	 * \param _pos1 top left corner of the shadow, should be set to the same position as the bar
+	 * \param _pos2 bottom right corner of the shadow, should be set to the same position as the bar
+	 * \param _r how far the shadow should extend
+	 * \param _alpha opacity of the shadow
+	 */
 	void Surface::BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const
 	{
 		const vec2 pos1 = _pos1 - _r; // top left bound
@@ -361,7 +440,14 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::CentreBar(int y1, int y2, int width, Pixel c) const
+	/**
+	 * \brief Draws a bar centered on the screen
+	 * \param y1 top y coordinate of the bar
+	 * \param y2 bottom y coordinate of the bar
+	 * \param width total width of the bar
+	 * \param c color of the bar
+	 */
+	void Surface::BarCentre(int y1, int y2, int width, Pixel c) const
 	{
 		const int x1 = m_Width / 2 - width / 2;
 		const int x2 = m_Width / 2 + width / 2;
@@ -374,6 +460,12 @@ namespace Tmpl8 {
 
 	}
 
+	/**
+	 * \brief Draws the outline of a circle
+	 * \param _pos center coordinates of the circle
+	 * \param _r radius of the circle
+	 * \param _c color of the circle
+	 */
 	void Surface::Circle( vec2 _pos, int _r, Pixel _c ) const
 	{
 		const float steps = 360;
@@ -384,6 +476,14 @@ namespace Tmpl8 {
 		}
 	}
 
+	/**
+	 * \brief Draws a circle that is filled in with a color
+	 * \param _pos center coordinates of the circle
+	 * \param _rMin minimum radius or a "hole" in the circle
+	 * \param _rMax radius of the circle
+	 * \param c color of the circle
+	 * \param _alpha determines opacity, default is 1.0f
+	 */
 	void Surface::CircleFull( vec2 _pos, int _rMin, int _rMax, Pixel c, float _alpha ) const
 	{
 		const vec2 pos1 = _pos - static_cast<float>(_rMax); // top left bound
@@ -401,6 +501,12 @@ namespace Tmpl8 {
 		}
 	}
 
+	/**
+	 * \brief Draws the shadow of a circle
+	 * \param _pos position of the shadow
+	 * \param _r radius of the shadow. This should be slightly larger than the radius of the circle
+	 * \param _alpha determines opacity, default is 1.0f
+	 */
 	void Surface::CircleShadow(vec2 _pos, float _r, float _alpha) const
 	{
 		const vec2 pos1 = _pos - _r; // top left bound
@@ -419,31 +525,11 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::DrawView(int x1, int y1, int x2, int y2, Pixel color) const
-	{
-		Bar(x1, 0, x2, y1, color);
-		Bar(x1, y2, x2, ScreenHeight, color);
-		Bar(0, 0, x1, ScreenHeight, color);
-		Bar(x2, 0, ScreenWidth, ScreenHeight, color);
-	}
-
-	bool Surface::CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2) {
-		return !(x1 >= bx2 || x2 <= bx1 || y1 >= by2 || y2 <= by1);
-	}
-
-	bool Surface::CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2)
-	{
-		return x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2;
-	}
-
-	int Surface::Visibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2)
-	{
-		if (!(x1 >= bx2 || x2 <= bx1 || y1 >= by2 || y2 <= by1) && !(x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2)) return 1;
-		if (x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2) return 2;
-		return 0;
-	}
-
-	void Surface::Vignette(float _strength)
+	/**
+	 * \brief Draws a circle at the center of the screen which get's progressively darker, just a creative effect.
+	 * \param _strength basically the opacity
+	 */
+	void Surface::Vignette(float _strength) const
 	{
 		for (int x = 0; x < m_Width; x++)
 		{
@@ -455,6 +541,32 @@ namespace Tmpl8 {
 			}
 		}
 	}
+
+	void Surface::DrawView(int x1, int y1, int x2, int y2, Pixel color) const // OLD FUNCTION, NO LONGER USED
+	{
+		Bar(x1, 0, x2, y1, color);
+		Bar(x1, y2, x2, ScreenHeight, color);
+		Bar(0, 0, x1, ScreenHeight, color);
+		Bar(x2, 0, ScreenWidth, ScreenHeight, color);
+	}
+
+	bool Surface::CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2) { // OLD FUNCTION, NO LONGER USED
+		return !(x1 >= bx2 || x2 <= bx1 || y1 >= by2 || y2 <= by1);
+	}
+
+	bool Surface::CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2) // OLD FUNCTION, NO LONGER USED
+	{
+		return x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2;
+	}
+
+	int Surface::Visibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2) // OLD FUNCTION, NO LONGER USED
+	{
+		if (!(x1 >= bx2 || x2 <= bx1 || y1 >= by2 || y2 <= by1) && !(x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2)) return 1;
+		if (x1 >= bx1 && x2 <= bx2 && y1 >= by1 && y2 <= by2) return 2;
+		return 0;
+	}
+
+	
 
 	void Surface::CopyTo( Surface* a_Dst, int a_X, int a_Y ) const
 	{

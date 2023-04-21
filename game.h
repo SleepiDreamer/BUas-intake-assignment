@@ -69,7 +69,7 @@ namespace Tmpl8
 		gameStates gameState = MainMenu;
 
 		int score = 0;
-		float scoreDisplay = score;
+		float scoreDisplay = static_cast<float>(score); // used for smooth score display
 		int highScore = 0;
 		int frame = 0;
 		float time = 0.0f;
@@ -82,19 +82,19 @@ namespace Tmpl8
 		float powerupTimer = 0.0f;
 		int powerupType = 0;
 
-		Sprite* backdrop = new Sprite(new Surface("assets/backdrop.jpg"), 1);
+		Sprite* backdrop = new Sprite(new Surface("assets/backdrop.jpg"), 1); // sprite no longer used
 
 		std::unique_ptr<Sprite> heartSprite = std::make_unique<Sprite>(new Surface("assets/heart.png"), 1);
 		std::unique_ptr<Sprite> heartSprite2 = std::make_unique<Sprite>(new Surface("assets/heart empty.png"), 1);
 		Player* player;
-		std::unique_ptr<Sprite> playerSprite = std::make_unique<Sprite>(new Surface("assets/ball.png"), 1);
+		std::unique_ptr<Sprite> playerSprite = std::make_unique<Sprite>(new Surface("assets/ball.png"), 1); // sprite no longer used
 		BulletManager bulletPool = BulletManager(150);
-		std::shared_ptr<Sprite> bulletSprite = std::make_shared<Sprite>(new Surface("assets/Bullet/bullet.png"), 1);
+		std::shared_ptr<Sprite> bulletSprite = std::make_shared<Sprite>(new Surface("assets/Bullet/bullet.png"), 1); // sprite no longer used
 		EnemyManager enemyPool = EnemyManager(150);
-		std::shared_ptr<Sprite> enemySprite = std::make_shared<Sprite>(new Surface("assets/ctankbase.tga"), 16);
+		std::shared_ptr<Sprite> enemySprite = std::make_shared<Sprite>(new Surface("assets/ctankbase.tga"), 16); // sprite no longer used
 		ParticleManager particlePool = ParticleManager(600);
-		std::shared_ptr<Sprite> particleSprite = std::make_shared<Sprite>(new Surface("assets/ball.png"), 1);
-		std::unique_ptr<Sprite> powerupSprite = std::make_unique<Sprite>(new Surface("assets/powerup.png"), 1);
+		std::shared_ptr<Sprite> particleSprite = std::make_shared<Sprite>(new Surface("assets/ball.png"), 1); // sprite no longer used
+		std::unique_ptr<Sprite> powerupSprite = std::make_unique<Sprite>(new Surface("assets/powerup.png"), 1); // sprite no longer used
 		Powerup* powerup;
 	};
 }

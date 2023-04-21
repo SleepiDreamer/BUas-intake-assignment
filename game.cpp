@@ -13,10 +13,7 @@ float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
 unsigned int constexpr BG_COLOR = 0x363636;
 unsigned int constexpr MENU_BG_COLOR = 0x000000;
 
-// TODO: upgrades?
-// TODO: enemies white on hit
-// TODO: bullet spread
-// TODO: randomize bullet color
+// TODO: improve death screen
 
 namespace Tmpl8
 {
@@ -66,6 +63,7 @@ namespace Tmpl8
 		particlePool.clear();
 		time = 0;
 		score = 0;
+		scoreDisplay = 0;
 		player->setPos({ 500, 500 });
 		player->setHp(player->getMaxHp());
 		player->setInvincibility(0);
@@ -226,12 +224,14 @@ namespace Tmpl8
 
 			// ---*--- RENDERING ---*---
 			//backdrop->Draw(screen, 0, 0); 
-			screen->Clear(BG_COLOR); // RENDER THIS FIRST!
+			screen->Clear(BG_COLOR); // RENDER THIS FIRST! (stupid me keeps forgetting)
 			screen->BarShadow({ 100 - 5, 100 + 5 }, { 105 - 5, ScreenHeight - 100 + 5}, 10.0f, 0.15f); // left red line shadows
 			screen->BarShadow({ 100 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, 105 + 5 }, 10.0f, 0.15f); // top red line shadows
 			screen->BarShadow({ ScreenWidth - 105 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // right red line shadows
 			screen->BarShadow({ 100 - 5, ScreenHeight - 105 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // bottom red line shadows
-			screen->BoxThick(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e); // red line
+			screen->BoxThick(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e); // red line around screen
+
+			player->renderDirectionLine();
 			particlePool.render(screen);
 			powerup->render(screen);
 			bulletPool.render(screen);
@@ -239,7 +239,7 @@ namespace Tmpl8
 
 			player->render();
 			screen->Vignette(0.15f);
-			scoreDisplay = (score * 0.1 + static_cast<int>(scoreDisplay) + 0.1) / 1.1;
+			scoreDisplay = (static_cast<float>(score) * 0.1f + scoreDisplay + 0.1f) / 1.1f;
 			screen->PrintScaled(("Score: " + std::to_string(static_cast<int>(scoreDisplay))).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)
 			{
@@ -252,14 +252,14 @@ namespace Tmpl8
 			}
 			switch (powerupType)
 			{
-			case 1: screen->CentreScaled("More damage", ScreenHeight - 60, 5, 5, 0xffffff); break;
-			case 2: screen->CentreScaled("Faster gun", ScreenHeight - 60, 5, 5, 0xffffff); break;
-			case 3: screen->CentreScaled("Invincibility", ScreenHeight - 60, 5, 5, 0xffffff); break;
-			case 4: screen->CentreScaled("Slower time", ScreenHeight - 60, 5, 5, 0xffffff); break;
-			case 5: screen->CentreScaled("Healed", ScreenHeight - 60, 5, 5, 0xffffff); break;
-			case 6: screen->CentreScaled("Nuked", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 1: screen->PrintCentreScaled("More damage", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 2: screen->PrintCentreScaled("Faster gun", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 3: screen->PrintCentreScaled("Invincibility", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 4: screen->PrintCentreScaled("Slower time", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 5: screen->PrintCentreScaled("Healed", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 6: screen->PrintCentreScaled("Nuked", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			}
-			screen->CentreBar(ScreenHeight - 20, ScreenHeight - 10, static_cast<int>(powerupTimer / POWERUP_DURATION * 300.0f), 0xffffff);
+			screen->BarCentre(ScreenHeight - 20, ScreenHeight - 10, static_cast<int>(powerupTimer / POWERUP_DURATION * 300.0f), 0xffffff);
 			if (powerupType == 6) screen->Bar(0, 0, ScreenWidth - 1, ScreenHeight - 1, 0xffffff, powerupTimer / POWERUP_MESSAGE_DURATION);
 
 
@@ -283,25 +283,25 @@ namespace Tmpl8
 		else if (gameState == MainMenu)
 		{
 			screen->Clear(MENU_BG_COLOR);
-			screen->CentreScaled("MR. BOUNCE", 40, 10, 10, 0xffffff);
-			screen->CentreScaled(("High score: " + std::to_string(highScore)).c_str(), ScreenHeight - 50, 3, 3, 0xffffff);
+			screen->PrintCentreScaled("MR. BOUNCE", 40, 10, 10, 0xffffff);
+			screen->PrintCentreScaled(("High score: " + std::to_string(highScore)).c_str(), ScreenHeight - 50, 3, 3, 0xffffff);
 
 			// play button
 			vec4 playButtonBox = { 545, 180, 730, 250 };
 			screen->Box({ playButtonBox.x, playButtonBox.y }, { playButtonBox.z, playButtonBox.w }, 0xffffff);
-			screen->CentreScaled("PLAY", 200, 6, 6, 0xffffff);
+			screen->PrintCentreScaled("PLAY", 200, 6, 6, 0xffffff);
 			if (buttonPressed({ playButtonBox.x, playButtonBox.y }, { playButtonBox.z, playButtonBox.w })) onStart();
 
 			// instructions button
 			vec4 instructionsButtonBox = { 545, 280, 730, 350 };
 			screen->Box({ instructionsButtonBox.x, instructionsButtonBox.y }, { instructionsButtonBox.z, instructionsButtonBox.w }, 0xffffff);
-			screen->CentreScaled("HELP", 300, 6, 6, 0xffffff);
+			screen->PrintCentreScaled("HELP", 300, 6, 6, 0xffffff);
 			if (buttonPressed({ instructionsButtonBox.x, instructionsButtonBox.y }, { instructionsButtonBox.z, instructionsButtonBox.w })) gameState = Instructions;
 
 			// quit button
 			vec4 quitButtonBox = { 545, 380, 730, 450 };
 			screen->Box({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w }, 0xffffff);
-			screen->CentreScaled("QUIT", 400, 6, 6, 0xffffff);
+			screen->PrintCentreScaled("QUIT", 400, 6, 6, 0xffffff);
 			if (buttonPressed({ quitButtonBox.x, quitButtonBox.y }, { quitButtonBox.z, quitButtonBox.w })) Shutdown();
 
 		}
@@ -333,7 +333,7 @@ namespace Tmpl8
 			if (gameOverTimer >= 0.0f)
 			{
 				screen->Clear(MENU_BG_COLOR);
-				screen->CentreScaled("You Died!", 300, 6, 6, 0xffffff);
+				screen->PrintCentreScaled("You Died!", 300, 6, 6, 0xffffff);
 				screen->PrintScaled("Score: ", 460, 500, 6, 6, 0xffffff);
 				screen->PrintScaled(std::to_string(score).c_str(), 690, 500, 6, 6, 0xffffff);
 			}

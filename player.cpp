@@ -3,7 +3,8 @@
 
 namespace Tmpl8
 {
-	void Player::dash(vec2 _dir)
+
+	void Player::dash(vec2 _dir) // old mechanic, no longer used
 	{
 		dashTimer = 0;
 		dashVel = _dir * 500;
@@ -50,20 +51,27 @@ namespace Tmpl8
 		if (invincibility < 0) invincibility = 0;
 	}
 
+	// ran when player is hit by enemy
 	bool Player::playerSubtractHealth()
 	{
 		invincibility = 2.0f;
 		return --hp == 0; // check if player is dead
 	}
 
+	// renders a line in the direction the player is moving, which may help with aiming
+	void Player::renderDirectionLine()
+	{
+		const vec3 normalizedVel = normalize({ vel.x, vel.y, 0 });
+		screen->LineClipped({ pos.x, pos.y }, { pos.x + 2500 * normalizedVel.x, pos.y + 2500 * normalizedVel.y }, { 105, 105, ScreenWidth - 105, ScreenHeight - 105 }, 0x5df5ff);
+	}
+
+
 	void Player::render() const
 	{
 		//sprite->DrawScaled(static_cast<int>(pos.x), static_cast<int>(pos.y), size.x * scale, size.y * scale, screen, false);
 		if (fmod(invincibility, 0.5) < 0.25)
 		{
-			const vec3 normalizedVel = normalize({vel.x, vel.y, 0});
 			screen->CircleShadow({ pos.x - 5, pos.y + 5 }, 35, 0.7f);
-			screen->LineClip({pos.x, pos.y}, {pos.x + 2500 * normalizedVel.x, pos.y + 2500 * normalizedVel.y}, {105, 105, ScreenWidth - 105, ScreenHeight - 105}, 0x5df5ff);
 			screen->CircleFull(pos, 0, static_cast<int>(size.x / 2), 0x64b4ff);
 			screen->CircleFull(pos, 20, 25, 0x5df5ff);
 		}

@@ -1,11 +1,7 @@
 #pragma once
-#include <iostream>
-#include <vector>
-
-#include "surface.h"
 #include "template.h"
+#include "surface.h"
 #include "entity.h"
-#include "util.h"
 
 
 namespace Tmpl8 {
@@ -40,6 +36,7 @@ namespace Tmpl8 {
 		void setShotDelay(float _shotDelay) { shotDelay = _shotDelay; }
 		float getShotDelay() const { return shotDelay; }
 		bool canDash() const { return dashTimer >= dashDelay; }
+		void renderDirectionLine();
 
 		Player(vec2 _pos, Surface* _screen, std::unique_ptr<Sprite> _sprite) :
 			Entity(_pos, _screen, std::move(_sprite))
