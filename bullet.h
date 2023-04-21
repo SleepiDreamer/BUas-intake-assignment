@@ -8,15 +8,16 @@ namespace Tmpl8 {
 	{
 	private:
 		bool active;
-		float scale = 1.0f; // factor to multiply the sprite size with
+		float scale = 2.0f; // factor to multiply the sprite size with
 		int id;
 	public:
 		void setActive(bool _active) { active = _active; }
 		bool getActive() const { return active; }
 		void setId(int _id) { id = _id; }
 		int getId() const { return id; }
+		float getHitboxSize() const { return size.x * scale; }
 
-		Bullet(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite, int _id) :
+		Bullet(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite, const int _id) :
 			Entity(_pos, _screen, std::move(_sprite))
 		{
 			id = _id;
@@ -29,6 +30,6 @@ namespace Tmpl8 {
 
 		void update(float _dt);
 
-		void render(Surface* _screen) const;
+		void render(const Surface* _screen) const;
 	};
 }

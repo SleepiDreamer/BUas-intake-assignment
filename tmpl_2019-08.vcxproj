@@ -229,6 +229,8 @@
     <ClCompile Include="enemyManager.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="particle.cpp" />
+    <ClCompile Include="particleManager.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="poolManager.cpp" />
     <ClCompile Include="powerup.cpp" />
@@ -244,6 +246,8 @@
     <ClInclude Include="enemyManager.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="particle.h" />
+    <ClInclude Include="particleManager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="poolManager.h" />
     <ClInclude Include="powerup.h" />

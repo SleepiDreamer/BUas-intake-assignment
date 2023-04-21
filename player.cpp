@@ -14,7 +14,7 @@ namespace Tmpl8
 	{
 		// move player
 		pos += (vel + dashVel) * _dt;
-		dashVel *= std::pow(0.1f, _dt); // dampening
+		dashVel *= pow(0.1f, _dt); // dampening
 
 		// screen boundary collisions
 		if (this->getTopLeft().x < 100) // LEFT

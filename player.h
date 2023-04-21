@@ -17,7 +17,7 @@ namespace Tmpl8 {
 		int maxHp = 3;
 		int hp = maxHp;
 		float invincibility = 0.0f;
-		float lastShotTimer = 0.0f;
+		float lastShotTimer = -0.2f;
 		float shotDelay = 0.05f;
 		float scale = 1.0f; // factor to multiply the sprite size with
 		float dashTimer = 0.0f;

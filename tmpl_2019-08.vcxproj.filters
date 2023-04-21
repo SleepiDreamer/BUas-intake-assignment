@@ -35,6 +35,12 @@
     <ClCompile Include="powerup.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="particleManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="surface.h">
@@ -72,6 +78,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="powerup.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="particleManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

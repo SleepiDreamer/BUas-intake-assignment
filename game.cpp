@@ -13,8 +13,8 @@ float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
 unsigned int constexpr BG_COLOR = 0x363636;
 unsigned int constexpr MENU_BG_COLOR = 0x000000;
 
-// TODO: upgrades
-// TODO: enemy death effect
+// TODO: upgrades?
+// TODO: fix nuke effect with particles
 
 namespace Tmpl8
 {
@@ -49,7 +49,7 @@ namespace Tmpl8
 	{
 		bulletPool.init(screen, bulletSprite);
 		enemyPool.init(screen, enemySprite);
-		std::ifstream file;
+		particlePool.init(screen, particleSprite);
 		highScore = stoi(readNthLine("data.txt", 0));
 	}
 
@@ -61,6 +61,7 @@ namespace Tmpl8
 		gameState = Playing;
 		bulletPool.clear();
 		enemyPool.clear();
+		particlePool.clear();
 		time = 0;
 		score = 0;
 		player->setPos({ 500, 500 });
@@ -159,6 +160,9 @@ namespace Tmpl8
 			}
 			bulletPool.update(player->getPos(), dt);
 
+			// ---*--- PARTICLES ---*---
+			particlePool.update(dt);
+
 			// ---*--- POWERUPS ---*---
 			if (powerup->getActive())
 			{
@@ -214,24 +218,33 @@ namespace Tmpl8
 						stop = true;
 					}
 				}
-				if (enemyPool.bulletCollisionCheck(bullet) && !stop)
+				const int bulletCollision = enemyPool.bulletCollisionCheck(bullet);
+				if (bulletCollision == 1 && !stop)
 				{
+					bulletPool.disable(bullet->getId());
+					score += 10;
+				}
+				else if (bulletCollision == 2 && !stop)
+				{
+					particlePool.enemyDied(bullet->getPos());
 					bulletPool.disable(bullet->getId());
 					score += 10;
 				}
 			}
 
 			// ---*--- RENDERING ---*---
-			//backdrop->Draw(screen, 0, 0); // RENDER THIS FIRST!
-			screen->Clear(BG_COLOR);
+			//backdrop->Draw(screen, 0, 0); 
+			screen->Clear(BG_COLOR); // RENDER THIS FIRST!
 			screen->BarShadow({ 100 - 5, 100 + 5 }, { 105 - 5, ScreenHeight - 100 + 5}, 10.0f, 0.15f); // left red line shadows
 			screen->BarShadow({ 100 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, 105 + 5 }, 10.0f, 0.15f); // top red line shadows
 			screen->BarShadow({ ScreenWidth - 105 - 5, 100 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // right red line shadows
 			screen->BarShadow({ 100 - 5, ScreenHeight - 105 + 5 }, { ScreenWidth - 100 - 5, ScreenHeight - 100 + 5 }, 10.0f, 0.15f); // bottom red line shadows
 			screen->BoxThick(100, 100, ScreenWidth -100, ScreenHeight - 100, 5, 0xe75e5e); // red line
+			particlePool.render(screen);
 			powerup->render(screen);
 			bulletPool.render(screen);
 			enemyPool.render(screen);
+
 			player->render();
 			screen->PrintScaled(("Score: " + std::to_string(score)).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)

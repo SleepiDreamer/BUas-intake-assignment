@@ -4,7 +4,7 @@
 
 namespace Tmpl8
 {
-    void BulletManager::init(Surface* _screen, std::shared_ptr<Sprite> _sprite)
+    void BulletManager::init(Surface* _screen, const std::shared_ptr<Sprite>& _sprite)
     {
         for (int i = 0; i < size; i++)
         {

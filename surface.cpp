@@ -293,7 +293,7 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::Box( int x1, int y1, int x2, int y2, Pixel c) const
+	void Surface::Box( int x1, int y1, int x2, int y2, Pixel c ) const
 	{
 		Line( (float)x1, (float)y1, (float)x2, (float)y1, c );
 		Line( (float)x2, (float)y1, (float)x2, (float)y2, c );
@@ -307,7 +307,7 @@ namespace Tmpl8 {
 	}
 
 
-	void Surface::BoxThick( int x1, int y1, int x2, int y2, int width, Pixel c) const
+	void Surface::BoxThick( int x1, int y1, int x2, int y2, int width, Pixel c ) const
 	{
 		for (int i = 0; i < width; i++)
 		{
@@ -315,7 +315,7 @@ namespace Tmpl8 {
 		}
 	}
 
-	void Surface::BoxThick(vec2 pos1, vec2 pos2, int width, Pixel c) const
+	void Surface::BoxThick( vec2 pos1, vec2 pos2, int width, Pixel c ) const
 	{
 		BoxThick(static_cast<int>(pos1.x), static_cast<int>(pos1.y), static_cast<int>(pos2.x), static_cast<int>(pos2.y), width, c);
 	}

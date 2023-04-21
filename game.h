@@ -8,6 +8,7 @@
 #include "powerup.h"
 #include "bulletManager.h"
 #include "enemyManager.h"
+#include "particleManager.h"
 
 namespace Tmpl8
 {
@@ -19,7 +20,7 @@ namespace Tmpl8
 		void SetTarget(Surface* surface) { screen = surface; }
 		void Init();
 		static void Shutdown();
-		void Tick(float deltaTime);
+		void Tick(float dt);
 		void MouseUp(int button) { 
 			if (button == SDL_BUTTON_LEFT)
 			{
@@ -90,6 +91,8 @@ namespace Tmpl8
 		std::shared_ptr<Sprite> bulletSprite = std::make_shared<Sprite>(new Surface("assets/Bullet/bullet.png"), 1);
 		EnemyManager enemyPool = EnemyManager(150);
 		std::shared_ptr<Sprite> enemySprite = std::make_shared<Sprite>(new Surface("assets/ctankbase.tga"), 16);
+		ParticleManager particlePool = ParticleManager(600);
+		std::shared_ptr<Sprite> particleSprite = std::make_shared<Sprite>(new Surface("assets/ball.png"), 1);
 		std::unique_ptr<Sprite> powerupSprite = std::make_unique<Sprite>(new Surface("assets/powerup.png"), 1);
 		Powerup* powerup;
 	};

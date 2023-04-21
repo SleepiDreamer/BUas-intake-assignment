@@ -5,27 +5,32 @@
 #include <vector>
 #include <iostream>
 
+#include "particle.h"
+
 namespace Tmpl8 {
-	class BulletManager
+	class ParticleManager
 	{
 	private:
-		std::vector<Bullet*> pool;
+		std::vector<Particle*> pool;
 		int n_active = 0;
 		int size;
 	public:
 		void init(Surface* _screen, const std::shared_ptr<Sprite>& _sprite);
-		void enable(vec2 _pos, vec2 _vel, float _scale, float _damage);
+		void enable(vec2 _pos, vec2 _vel, float _scale, float _lifetime);
 		void disable(int id);
 		int getActiveBullets() const { return n_active; }
-		int getSize() const { return size;  }
+		int getSize() const { return size; }
 
-		std::vector<Bullet*> getPool() { return pool; }
 
-		void render(Surface* _screen) const;
-		void update(vec2 _playerPos, float _dt);
+		std::vector<Particle*> getPool() { return pool; }
+
+		void render(const Surface* _screen) const;
+		void update(float _dt);
 		void clear();
 
-		BulletManager(int _size)
+		void enemyDied(vec2 _pos);
+
+		ParticleManager(int _size)
 		{
 			pool.reserve(_size);
 			size = _size;

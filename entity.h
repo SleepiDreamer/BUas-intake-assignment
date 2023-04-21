@@ -17,22 +17,23 @@ namespace Tmpl8 {
 		std::shared_ptr<Sprite> sprite; // default constructed to nullptr
 		int frame = 0;
 	public:
+		virtual ~Entity() = default;
 		void setPos( vec2 _pos ) { pos = _pos; }
-		vec2 getPos() { return pos; }
+		vec2 getPos() const { return pos; }
 		virtual vec2 getTopLeft() { return { pos.x - (size.x / 2), pos.y - (size.y / 2) }; }
 		virtual vec2 getBottomRight() { return { pos.x + (size.x / 2), pos.y + (size.y / 2) }; }
 		void setVel( vec2 _vel ) { vel = _vel; }
-		vec2 getVel() { return vel; }
+		vec2 getVel() const { return vel; }
 		void setDir( vec2 _pos ) { dir = _pos; }
-		vec2 getDir() { return dir; }
+		vec2 getDir() const { return dir; }
 		void setSize( vec2 _size ) { size = _size; }
-		vec2 getSize() { return size; }
+		vec2 getSize() const { return size; }
 		void setDamage( float _damage ) { damage = _damage; }
-		float getDamage() { return damage; }
+		float getDamage() const { return damage; }
 		void setSprite(std::shared_ptr<Sprite> _sprite ) { sprite = std::move(_sprite); }
-		const Sprite& getSprite() { return *sprite; }
+		const Sprite& getSprite() const { return *sprite; }
 		void setFrame(int _frame ) { frame = _frame; }
-		int getFrame() { return frame; }
+		int getFrame() const { return frame; }
 
 		Entity(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite) :
 			pos(_pos), screen(_screen), sprite(std::move(_sprite))
@@ -64,6 +65,6 @@ namespace Tmpl8 {
 		 * \param py  y coordinate to move towards
 		 * \param dist  how far to move
 		 */
-		void MoveTowards(vec2 _pos, const float _dist);
+		void MoveTowards(vec2 _pos, float _speed);
 	};
 }

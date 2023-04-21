@@ -22,7 +22,7 @@ namespace Tmpl8 {
 		bool getActive() const { return active; }
 		void setId(int _id) { id = _id; }
 		int getId() const { return id; }
-		float getHitboxSize() const { return hitboxSize; }
+		float getHitboxSize() const { return hitboxSize * scale; }
 
 		Enemy(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite, int _id) :
 			Entity(_pos, _screen, std::move(_sprite))
