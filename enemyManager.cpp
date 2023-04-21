@@ -88,6 +88,7 @@ namespace Tmpl8
             if (distanceBetween(_bullet->getPos(), enemy->getPos()) < enemy->getHitboxSize() + _bullet->getHitboxSize())
             {
                 enemy->setHP(enemy->getHP() - _bullet->getDamage());
+                enemy->setWhiteFlashTimer(1.0f);
                 if (enemy->getHP() <= 0)
                 {
                     disable(enemy->getId());

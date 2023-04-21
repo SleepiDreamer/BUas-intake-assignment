@@ -14,6 +14,6 @@ namespace Tmpl8
 	{
 		//sprite->DrawScaled(pos.x, pos.y, size.x * scale, size.y * scale, _screen, false); // draw sprite centered around point
 		_screen->CircleShadow({ pos.x - 5, pos.y + 5 }, 6 * scale, 0.25f);
-		_screen->CircleFull(pos, 0.0f * scale, 3.0f * scale, 0xff4400);
+		_screen->CircleFull(pos, 0.0f * scale, 3.0f * scale, color);
 	}
 };

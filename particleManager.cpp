@@ -12,7 +12,7 @@ namespace Tmpl8
         }
     }
 
-    void ParticleManager::enable(vec2 _pos, vec2 _vel, float _scale, float _lifetime)
+    void ParticleManager::enable(vec2 _pos, vec2 _vel, float _scale, float _lifetime, int _type)
     {
         Particle* element = pool[n_active++];
         element->setActive(true);
@@ -21,6 +21,7 @@ namespace Tmpl8
         element->setSize(_scale);
         element->setLifetime(_lifetime);
         element->setScale(_scale);
+        element->setType(_type);
     }
 
     void ParticleManager::disable(int _id)
@@ -79,7 +80,17 @@ namespace Tmpl8
 	        const float angle = randfloat(0, 2 * PI);
 			vec2 vel = { cos(angle), sin(angle) };
             vel *= randfloat(150.0f, 500.0f);
-            enable(_pos, vel, randfloat(0.75f, 1.25f), randfloat(1.5f, 2.5f));
+            enable(_pos, vel, randfloat(0.75f, 1.25f), randfloat(0.75f, 1.25f), 0);
         }
     }
+
+    void ParticleManager::playerHealed(vec2 _pos)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            const vec2 pos = { randfloat(_pos.x - 30, _pos.x + 30), randfloat(_pos.y - 30, _pos.y + 30) };
+            enable(pos, 0, randfloat(1.25f, 2.0f), randfloat(0.75f, 1.25f), 1);
+        }
+    }
+    	
 }

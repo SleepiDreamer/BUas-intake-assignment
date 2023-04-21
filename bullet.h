@@ -2,6 +2,7 @@
 #include "surface.h"
 #include "template.h"
 #include "entity.h"
+#include "util.h"
 
 namespace Tmpl8 {
 	class Bullet : public Entity
@@ -10,6 +11,7 @@ namespace Tmpl8 {
 		bool active;
 		float scale = 2.0f; // factor to multiply the sprite size with
 		int id;
+		int color;
 	public:
 		void setActive(bool _active) { active = _active; }
 		bool getActive() const { return active; }
@@ -26,6 +28,7 @@ namespace Tmpl8 {
 			else size = { 5, 5 };
 			damage = 10.0f;
 			active = false;
+			color = rgbCombine(randint(0xdd, 0xff), randint(0x33, 0x55), 0);
 		}
 
 		void update(float _dt);

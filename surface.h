@@ -36,6 +36,8 @@ inline Pixel SubBlend( Pixel a_Color1, Pixel a_Color2 )
 	return static_cast<Pixel>(red + green + blue);
 }
 
+Pixel AlphaBlend(Pixel dest, Pixel src, float alpha);
+
 class Surface
 {
 	enum { OWNER = 1 };
@@ -83,6 +85,7 @@ public:
 	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	bool CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	int Visibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
+	void Vignette(float _strength);
 private:
 	// Attributes
 	Pixel* m_Buffer{nullptr};	

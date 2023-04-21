@@ -50,8 +50,6 @@ namespace Tmpl8
         	screen->Bar(pos * scale- size.x / 2, pos * scale+ size.x / 2, 0xffa071); // body
             screen->BoxThick(pos - size.x / 2, pos + size.x / 2, 5, 0xfedd9e); // outline
             screen->PrintScaled("?", pos.x - 15, pos.y - 12, 5, 5, 0xffffff); // question mark
-            
-            
         }
 	}
 };

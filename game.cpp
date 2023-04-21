@@ -14,6 +14,9 @@ unsigned int constexpr BG_COLOR = 0x363636;
 unsigned int constexpr MENU_BG_COLOR = 0x000000;
 
 // TODO: upgrades?
+// TODO: enemies white on hit
+// TODO: bullet spread
+// TODO: randomize bullet color
 
 namespace Tmpl8
 {
@@ -101,22 +104,6 @@ namespace Tmpl8
 			// ---*--- MOVEMENT ---*---
 			player->update(dt);
 			player->PointTowards(mousePos);
-			if (player->canDash() && GetAsyncKeyState(VK_UP))
-			{
-				player->dash( {0, -1} ); // UP
-			}
-			if (player->canDash() && GetAsyncKeyState(VK_DOWN))
-			{
-				player->dash({0, 1}); // DOWN
-			}
-			if (player->canDash() && GetAsyncKeyState(VK_LEFT))
-			{
-				player->dash({-1, 0}); // LEFT
-			}
-			if (player->canDash() && GetAsyncKeyState(VK_RIGHT))
-			{
-				player->dash({1, 0}); // RIGHT
-			}
 
 			// ---*--- ENEMIES ---*---
 			enemyPool.update(player->getPos(), dt);
@@ -152,9 +139,12 @@ namespace Tmpl8
 			else canShoot = player->canShoot();
 			if (mouseLeftDown && canShoot)
 			{
-				float damage = 25.0f;
+				float damage = 20.0f;
 				if (powerupType == 1) damage *= 3.0f;
-				bulletPool.enable(player->getPos(), player->getDir() * 1000.0f , 1.0f, damage);
+				const float playerDir = atan2(player->getDir().x, player->getDir().y);
+				const float shootDir = -playerDir + randfloat(-0.03f, 0.03f) + PI / 2.0f;
+				const vec2 shootVel = { cos(shootDir) * 1000.0f, sin(shootDir) * 1000.0f };
+				bulletPool.enable(player->getPos(), shootVel , 1.0f, damage);
 				player->resetShotTimer();
 			}
 			bulletPool.update(player->getPos(), dt);
@@ -210,7 +200,7 @@ namespace Tmpl8
 						case 2: powerupTimer = POWERUP_DURATION; break; // fire rate
 						case 3: powerupTimer = POWERUP_DURATION; break; // invincibility
 						case 4: powerupTimer = POWERUP_DURATION; break; // speed
-						case 5: powerupTimer = POWERUP_MESSAGE_DURATION; player->setHp(min(player->getHp() + 1, 3)); break; // health
+						case 5: powerupTimer = POWERUP_MESSAGE_DURATION; particlePool.playerHealed(player->getPos());  player->setHp(min(player->getHp() + 1, 3)); break; // health
 						case 6: powerupTimer = POWERUP_MESSAGE_DURATION; particlePool.clear(); enemyPool.clear(); score += enemyPool.getActiveEnemies() * 10; break; // nuke
 						}
 						score += 10;
@@ -245,6 +235,7 @@ namespace Tmpl8
 			enemyPool.render(screen);
 
 			player->render();
+			screen->Vignette(0.15f);
 			screen->PrintScaled(("Score: " + std::to_string(score)).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)
 			{
@@ -266,6 +257,7 @@ namespace Tmpl8
 			}
 			screen->CentreBar(ScreenHeight - 20, ScreenHeight - 10, static_cast<int>(powerupTimer / POWERUP_DURATION * 300.0f), 0xffffff);
 			if (powerupType == 6) screen->Bar(0, 0, ScreenWidth - 1, ScreenHeight - 1, 0xffffff, powerupTimer / POWERUP_MESSAGE_DURATION);
+
 
 			// ---*--- DEATH MECHANIC ---*---
 			time += dt;
@@ -319,7 +311,8 @@ namespace Tmpl8
 			screen->PrintScaled("You move automatically!", 25, 100, 3, 3, 0xffffff);
 			screen->PrintScaled("You must shoot the enemies! They die after 2 hits", 25, 150, 3, 3, 0xffffff);
 			screen->PrintScaled("Powerups spawn randomly on the map. Shoot them to get a surprise!", 25, 200, 3, 3, 0xffffff);
-			screen->PrintScaled("Good luck!", 25, 250, 3, 3, 0xffffff);
+			screen->PrintScaled("Good luck!", 25, 300, 3, 3, 0xffffff);
+			screen->PrintScaled("Try to beat my top score of 11760!", 25, 250, 3, 3, 0xffffff);
 
 			// menu button
 			vec4 menuButtonBox = { 1045, 25, 1230, 95 };

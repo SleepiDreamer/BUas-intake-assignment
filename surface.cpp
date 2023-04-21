@@ -443,6 +443,19 @@ namespace Tmpl8 {
 		return 0;
 	}
 
+	void Surface::Vignette(float _strength)
+	{
+		for (int x = 0; x < m_Width; x++)
+		{
+			for (int y = 0; y < m_Height; y++)
+			{
+				const float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, { static_cast<float>(m_Width / 2), static_cast<float>(m_Height / 2) });
+				const float strength = (dist / (m_Width / 2));
+				Plot(x, y, 0x000000, strength * _strength);
+			}
+		}
+	}
+
 	void Surface::CopyTo( Surface* a_Dst, int a_X, int a_Y ) const
 	{
 		Pixel* dst = a_Dst->GetBuffer();

@@ -61,4 +61,6 @@ namespace Tmpl8
 	float distanceToRect(double x, double y, double x_min, double y_min, double x_max, double y_max);
 
 	float distanceToRect(vec2 _point, vec2 _pos1, vec2 _pos2);
+
+	int rgbCombine(int r, int g, int b);
 }

@@ -6,6 +6,8 @@
 #include <string>
 #include <charconv>
 
+#include "surface.h"
+
 #define HYPOT(x, y) sqrt((x) * (x) + (y) * (y))
 
 namespace Tmpl8
@@ -116,7 +118,7 @@ namespace Tmpl8
 		file.close();
 	}
 
-	//https://codereview.stackexchange.com/questions/175566/compute-shortest-distance-between-point-and-a-rectangle
+	//https://www.shadertoy.com/view/MtBGWc
 	float distanceToRect(double x, double y, double x_min, double y_min, double x_max, double y_max)
 	{
 		if (x < x_min) {
@@ -139,5 +141,10 @@ namespace Tmpl8
 	float distanceToRect(vec2 _point, vec2 _pos1, vec2 _pos2)
 	{
 		return distanceToRect(static_cast<int>(_point.x), static_cast<int>(_point.y), static_cast<int>(_pos1.x), static_cast<int>(_pos1.y), static_cast<int>(_pos2.x), static_cast<int>(_pos2.y));
+	}
+
+	int rgbCombine(int r, int g, int b)
+	{
+		return (r << 16) + (g << 8) + b;
 	}
 }

@@ -12,6 +12,7 @@ namespace Tmpl8 {
 		bool active;
 		float scale = 1.0f; // factor to multiply the sprite size with
 		int id;
+		int type;
 		float radius = 5.0f;
 		float lifetime;
 		std::vector<int> pastels = { 0xB2A4FF, 0xFFB4B4, 0xFFDEB4, 0xFDF7C3, 0xF7C8E0, 0xDFFFD8, 0xB4E4FF, 0x95BDFF };
@@ -23,6 +24,8 @@ namespace Tmpl8 {
 		int getId() const { return id; }
 		float getLifetime() const { return lifetime; }
 		void setLifetime(const float _lifetime) { lifetime = _lifetime; }
+		int getType() const { return type; }
+		void setType(const int _type) { type = _type; }
 
 		Particle(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite, const int _id) :
 			Entity(_pos, _screen, std::move(_sprite))
