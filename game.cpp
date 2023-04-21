@@ -108,7 +108,7 @@ namespace Tmpl8
 			// ---*--- ENEMIES ---*---
 			enemyPool.update(player->getPos(), dt);
 			enemySpawnTimer += dt;
-			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.25f; // increase spawn rate over time
+			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.40f; // increase spawn rate over time
 			if (enemySpawnTimer > enemySpawnDelay)
 			{
 				spawnEnemy();
@@ -192,6 +192,7 @@ namespace Tmpl8
 					{
 						bulletPool.disable(bullet->getId());
 						powerupSpawnTimer = 0.0f;
+						particlePool.powerupConsumed(powerup->getPos());
 						powerup->consume();
 						do { powerupType = randint(1, 6); } while (powerupType == 5 && player->getHp() == player->getMaxHp()); // don't heal if already full health
 						switch (powerupType)
@@ -236,7 +237,8 @@ namespace Tmpl8
 
 			player->render();
 			screen->Vignette(0.15f);
-			screen->PrintScaled(("Score: " + std::to_string(score)).c_str(), 10, 10, 5, 5, 0xdddddd);
+			scoreDisplay = (score * 0.1 + static_cast<int>(scoreDisplay) + 0.1) / 1.1;
+			screen->PrintScaled(("Score: " + std::to_string(static_cast<int>(scoreDisplay))).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)
 			{
 				const float xPos = static_cast<float>(ScreenWidth) / 2.0f + (static_cast<float>(i) - (player->getMaxHp() - 1) / 2.0f) * 80.0f;

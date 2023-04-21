@@ -77,10 +77,23 @@ namespace Tmpl8
     {
         for (int i = 0; i < 5; i++)
         {
+            const vec2 pos = { randfloat(_pos.x - 10, _pos.x + 10), randfloat(_pos.y - 10, _pos.y + 10) };
 	        const float angle = randfloat(0, 2 * PI);
 			vec2 vel = { cos(angle), sin(angle) };
             vel *= randfloat(150.0f, 500.0f);
-            enable(_pos, vel, randfloat(0.75f, 1.25f), randfloat(0.75f, 1.25f), 0);
+            enable(pos, vel, randfloat(0.75f, 1.25f), randfloat(0.75f, 1.25f), 0);
+        }
+    }
+
+    void ParticleManager::powerupConsumed(vec2 _pos)
+    {
+        for (int i = 0; i < 35; i++)
+        {
+            const vec2 pos = { randfloat(_pos.x - 50, _pos.x + 50), randfloat(_pos.y - 50, _pos.y + 50) };
+            const float angle = randfloat(0, 2 * PI);
+            vec2 vel = { cos(angle), sin(angle) };
+            vel *= randfloat(750.0f, 2500.0f);
+            enable(pos, vel, randfloat(1.0f, 2.5f), randfloat(0.75f, 1.5f), 1);
         }
     }
 
@@ -89,8 +102,7 @@ namespace Tmpl8
         for (int i = 0; i < 5; i++)
         {
             const vec2 pos = { randfloat(_pos.x - 30, _pos.x + 30), randfloat(_pos.y - 30, _pos.y + 30) };
-            enable(pos, 0, randfloat(1.25f, 2.0f), randfloat(0.75f, 1.25f), 1);
+            enable(pos, 0, randfloat(1.25f, 2.0f), randfloat(0.75f, 1.25f), 2);
         }
     }
-    	
 }

@@ -47,8 +47,8 @@ namespace Tmpl8
         	const float barWidth = lifetime * 10;
             screen->BarShadow({ pos.x - barWidth / 2 - 5, getBottomRight().y + 15 }, { pos.x + barWidth / 2 - 5, getBottomRight().y + 25 }, 10.0f, 0.2f);
         	screen->Bar(pos.x - barWidth / 2, getBottomRight().y + 10, pos.x + barWidth / 2, getBottomRight().y + 20, 0xffffff); // lifetime
-        	screen->Bar(pos * scale- size.x / 2, pos * scale+ size.x / 2, 0xffa071); // body
-            screen->BoxThick(pos - size.x / 2, pos + size.x / 2, 5, 0xfedd9e); // outline
+        	screen->Bar(pos * scale- size.x / 2, pos * scale+ size.x / 2, 0xffb500); // body
+            screen->BoxThick(pos - size.x / 2, pos + size.x / 2, 5, 0xffd700); // outline
             screen->PrintScaled("?", pos.x - 15, pos.y - 12, 5, 5, 0xffffff); // question mark
         }
 	}

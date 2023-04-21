@@ -33,6 +33,7 @@ namespace Tmpl8 {
 
 		void enemyDied(vec2 _pos);
 		void playerHealed(vec2 _pos);
+		void powerupConsumed(vec2 _pos);
 
 		ParticleManager(int _size)
 		{

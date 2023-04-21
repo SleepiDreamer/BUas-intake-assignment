@@ -69,6 +69,7 @@ namespace Tmpl8
 		gameStates gameState = MainMenu;
 
 		int score = 0;
+		float scoreDisplay = score;
 		int highScore = 0;
 		int frame = 0;
 		float time = 0.0f;
