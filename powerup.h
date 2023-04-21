@@ -13,7 +13,7 @@ namespace Tmpl8 {
 		float hitboxSize = 20.0f;
 		float scale = 1.0f;
 		bool active = false;
-
+		float whiteFlashTimer = 0.0f;
 	public:
 		void setHP(float _hp) { hp = _hp; }
 		float getHP() const { return hp; }
@@ -25,6 +25,8 @@ namespace Tmpl8 {
 		void setScale(float _scale) { scale = _scale; }
 		float getScale() const { return scale; }
 		float getMaxHp() const { return maxHp; }
+		float getWhiteFlashTimer() const { return whiteFlashTimer; }
+		void setWhiteFlashTimer(float _whiteFlashTimer) { whiteFlashTimer = _whiteFlashTimer; }
 
 		Powerup(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite) :
 			Entity(_pos, _screen, std::move(_sprite))

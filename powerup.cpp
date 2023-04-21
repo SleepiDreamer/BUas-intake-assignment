@@ -38,7 +38,12 @@ namespace Tmpl8
         lifetime = 0.0f;
     }
 
-	void Powerup::render(Surface* _screen)
+    void Powerup::update(float _dt)
+    {
+        if (whiteFlashTimer > 0.0f) whiteFlashTimer -= _dt * 12;
+    }
+
+    void Powerup::render(Surface* _screen)
 	{
         if (active) {
             /*screen->CircleFull(pos, 0, static_cast<int>(scale * size.x / 2.0f), 0xffa071);
@@ -49,6 +54,7 @@ namespace Tmpl8
         	screen->Bar(pos.x - barWidth / 2, getBottomRight().y + 10, pos.x + barWidth / 2, getBottomRight().y + 20, 0xffffff); // lifetime
         	screen->Bar(pos * scale- size.x / 2, pos * scale+ size.x / 2, 0xffb500); // body
             screen->BoxThick(pos - size.x / 2, pos + size.x / 2, 5, 0xffd700); // outline
+            if (whiteFlashTimer > 0.0f) screen->Bar(pos * scale - size.x / 2 - 5, pos * scale + size.x / 2 + 5, 0xffffff, whiteFlashTimer); // white flash when hit
             screen->PrintScaled("?", pos.x - 15, pos.y - 12, 5, 5, 0xffffff); // question mark
         }
 	}

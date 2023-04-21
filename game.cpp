@@ -153,6 +153,7 @@ namespace Tmpl8
 			particlePool.update(dt);
 
 			// ---*--- POWERUPS ---*---
+			powerup->update(dt);
 			if (powerup->getActive())
 			{
 				powerup->setLifetime(powerup->getLifetime() - dt);
@@ -184,6 +185,7 @@ namespace Tmpl8
 				if (powerup->getActive()) {
 					if (powerup->bulletCollisionCheck(bullet) == 1)
 					{
+						powerup->setWhiteFlashTimer(1.0f);
 						bulletPool.disable(bullet->getId());
 						score += 10;
 						stop = true;
