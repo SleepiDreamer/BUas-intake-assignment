@@ -133,6 +133,7 @@ namespace Tmpl8
 	}
 
 	//https://www.shadertoy.com/view/MtBGWc
+	// returns the smallest distance between a given point and any point on a rectangle
 	float distanceToRect(double x, double y, double x_min, double y_min, double x_max, double y_max)
 	{
 		if (x < x_min) {
@@ -152,11 +153,13 @@ namespace Tmpl8
 		}
 	}
 
+	// returns the smallest distance between a given point and any point on a rectangle
 	float distanceToRect(vec2 _point, vec2 _pos1, vec2 _pos2)
 	{
 		return distanceToRect(static_cast<int>(_point.x), static_cast<int>(_point.y), static_cast<int>(_pos1.x), static_cast<int>(_pos1.y), static_cast<int>(_pos2.x), static_cast<int>(_pos2.y));
 	}
 
+	// combines red, green and blue values into a single integer color
 	int rgbCombine(int r, int g, int b)
 	{
 		return (r << 16) + (g << 8) + b;

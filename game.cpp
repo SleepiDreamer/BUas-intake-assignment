@@ -64,6 +64,7 @@ namespace Tmpl8
 		time = 0;
 		score = 0;
 		scoreDisplay = 0;
+		isPersonalBest = false;
 		player->setPos({ 500, 500 });
 		player->setHp(player->getMaxHp());
 		player->setInvincibility(0);
@@ -125,10 +126,11 @@ namespace Tmpl8
 			{
 				iButtonPressed = false;
 			}
-			if (GetAsyncKeyState(0x4F)) // DEBUG: reset high score when 'o' is pressed
+			// if 'o' pressed
+			if (GetAsyncKeyState(0x4F))
 			{
-				writeToFile("data.txt", 0);
-				highScore = 0; 
+				gameOverTimer = 2.0f;
+				gameState = Death;
 			}
 
 			// ---*--- BULLETS ---*---
@@ -262,7 +264,6 @@ namespace Tmpl8
 			screen->BarCentre(ScreenHeight - 20, ScreenHeight - 10, static_cast<int>(powerupTimer / POWERUP_DURATION * 300.0f), 0xffffff);
 			if (powerupType == 6) screen->Bar(0, 0, ScreenWidth - 1, ScreenHeight - 1, 0xffffff, powerupTimer / POWERUP_MESSAGE_DURATION);
 
-
 			// ---*--- DEATH MECHANIC ---*---
 			time += dt;
 
@@ -273,6 +274,7 @@ namespace Tmpl8
 					gameState = Death;
 					gameOverTimer = 2.0f;
 					writeToFile("data.txt", max(score, highScore));
+					if (score > highScore) isPersonalBest = true;
 					highScore = max(score, highScore);
 				}
 			}
@@ -333,9 +335,10 @@ namespace Tmpl8
 			if (gameOverTimer >= 0.0f)
 			{
 				screen->Clear(MENU_BG_COLOR);
-				screen->PrintCentreScaled("You Died!", 300, 6, 6, 0xffffff);
-				screen->PrintScaled("Score: ", 460, 500, 6, 6, 0xffffff);
-				screen->PrintScaled(std::to_string(score).c_str(), 690, 500, 6, 6, 0xffffff);
+				screen->PrintCentreScaled("You Died!", 150, 6, 6, 0xffffff);
+				screen->PrintCentreScaled(("Score: " + std::to_string(score)).c_str(), ScreenHeight / 2, 6, 6, 0xffffff);
+				screen->PrintCentreScaled(("High score: " + std::to_string(highScore)).c_str(), ScreenHeight / 2 + 60, 4, 4, 0xffffff);
+				if (isPersonalBest) screen->PrintCentreScaled("New personal best!", ScreenHeight / 2 + 110, 4, 4, 0xffffff);
 			}
 			else
 			{

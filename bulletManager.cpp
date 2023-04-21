@@ -4,6 +4,7 @@
 
 namespace Tmpl8
 {
+    // initialize the pool of bullet objects
     void BulletManager::init(Surface* _screen, const std::shared_ptr<Sprite>& _sprite)
     {
         for (int i = 0; i < size; i++)
@@ -12,6 +13,7 @@ namespace Tmpl8
         }
     }
 
+    // enable a bullet in the pool at a given position, velocity, scale and damage
     void BulletManager::enable(vec2 _pos, vec2 _vel, float _scale, float _damage)
     {
         Bullet* element = pool[n_active++];
@@ -22,6 +24,7 @@ namespace Tmpl8
         element->setDamage(_damage);
     }
 
+    // disable a specified bullet in the pool
     void BulletManager::disable(int _id)
     {
         int current = 0;
@@ -39,7 +42,8 @@ namespace Tmpl8
         pool[n_active - 1]->setActive(false);
     	n_active--;
     }
-    
+
+    // render all the active bullets in the pool
     void BulletManager::render(Surface* _screen) const
     {
         for (int i = 0; i < n_active; i++)
@@ -48,6 +52,7 @@ namespace Tmpl8
         }
     }
 
+    // update all the active bullets in the pool
     void BulletManager::update(vec2 _playerPos, float _dt)
     {
         for (int i = 0; i < n_active; i++)
@@ -61,6 +66,7 @@ namespace Tmpl8
         }
     }
 
+    // set all the active bullets in the pool to inactive
     void BulletManager::clear()
     {
         for (int i = 0; i < n_active; i++)

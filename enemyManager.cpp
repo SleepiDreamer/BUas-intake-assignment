@@ -9,6 +9,7 @@
 
 namespace Tmpl8
 {
+    // initialize the pool of enemy objects
     void EnemyManager::init(Surface* _screen, const std::shared_ptr<Sprite>& _sprite)
     {
         for (int i = 0; i < size; i++)
@@ -17,6 +18,7 @@ namespace Tmpl8
         }
     }
 
+    // enable an enemy in the pool at a given position, velocity, scale and damage
     void EnemyManager::enable(const vec2 _pos, const vec2 _vel, const float _scale, const float _damage)
     {
         Enemy* element = pool[n_active];
@@ -29,6 +31,7 @@ namespace Tmpl8
         n_active++;
     }
 
+    // disable a specified enemy in the pool
     void EnemyManager::disable(const int _id)
     {
         int current = 0;
@@ -46,6 +49,7 @@ namespace Tmpl8
         std::swap(pool[current], pool[--n_active]);
     }
 
+    // render all the active enemies in the pool
     void EnemyManager::render(Surface* _screen) const
     {
         for (int i = 0; i < n_active; i++)
@@ -57,6 +61,7 @@ namespace Tmpl8
         }
     }
 
+    // update all the active enemies in the pool
     void EnemyManager::update(const vec2 _playerPos, const float _dt) const
     {
         for (int i = 0; i < n_active; i++)
@@ -68,6 +73,7 @@ namespace Tmpl8
         }
     }
 
+    // set all the active enemies in the pool to inactive
     void EnemyManager::clear()
     {
         for (int i = 0; i < n_active; i++)
@@ -79,6 +85,7 @@ namespace Tmpl8
         n_active = 0;
     }
 
+    // check for collisions between all active enemies and the bullets, return 0 if no collision, 1 if collision with enemy, 2 if collision with enemy and enemy dies
     int EnemyManager::bulletCollisionCheck(const Bullet* _bullet)
     {
         // go through all enemies
@@ -100,6 +107,7 @@ namespace Tmpl8
         return 0;
     }
 
+    // check for collisions between all active enemies and the player, return true if there is a collision
     bool EnemyManager::playerCollisionCheck(const Player* _player) const
     {
         for (int i = 0; i < n_active; i++)

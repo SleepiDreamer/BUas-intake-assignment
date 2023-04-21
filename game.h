@@ -71,6 +71,7 @@ namespace Tmpl8
 		int score = 0;
 		float scoreDisplay = static_cast<float>(score); // used for smooth score display
 		int highScore = 0;
+		bool isPersonalBest = false;
 		int frame = 0;
 		float time = 0.0f;
 		float enemySpawnTimer = 0.0f;

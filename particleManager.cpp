@@ -4,6 +4,7 @@
 
 namespace Tmpl8
 {
+    // initialize the pool of bullet objects
     void ParticleManager::init(Surface* _screen, const std::shared_ptr<Sprite>& _sprite)
     {
         for (int i = 0; i < size; i++)
@@ -12,6 +13,7 @@ namespace Tmpl8
         }
     }
 
+    // enable a bullet in the pool at a given position, velocity, scale and damage
     void ParticleManager::enable(vec2 _pos, vec2 _vel, float _scale, float _lifetime, int _type)
     {
         Particle* element = pool[n_active++];
@@ -24,6 +26,7 @@ namespace Tmpl8
         element->setType(_type);
     }
 
+    // disable a specified bullet in the pool
     void ParticleManager::disable(int _id)
     {
         int current = 0;
@@ -42,6 +45,7 @@ namespace Tmpl8
         n_active--;
     }
 
+    // render all the active bullets in the pool
     void ParticleManager::render(const Surface* _screen) const
     {
         for (int i = 0; i < n_active; i++)
@@ -50,6 +54,7 @@ namespace Tmpl8
         }
     }
 
+    // update all the active bullets in the pool
     void ParticleManager::update(const float _dt)
     {
         for (int i = 0; i < n_active; i++)
@@ -63,6 +68,7 @@ namespace Tmpl8
         }
     }
 
+    // set all the active bullets in the pool to inactive
     void ParticleManager::clear()
     {
         for (int i = 0; i < n_active; i++)
@@ -73,6 +79,7 @@ namespace Tmpl8
         n_active = 0;
     }
 
+    // spawns an "enemy splatter" when an enemy was killed by the player
     void ParticleManager::enemyDied(vec2 _pos)
     {
         for (int i = 0; i < 5; i++)
@@ -85,6 +92,7 @@ namespace Tmpl8
         }
     }
 
+    // spawns a powerup explosion when a powerup was consumed by the player
     void ParticleManager::powerupConsumed(vec2 _pos)
     {
         for (int i = 0; i < 35; i++)
@@ -97,6 +105,7 @@ namespace Tmpl8
         }
     }
 
+    // spawns a healing effect when the player was healed by a powerup
     void ParticleManager::playerHealed(vec2 _pos)
     {
         for (int i = 0; i < 5; i++)
