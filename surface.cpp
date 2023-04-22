@@ -16,9 +16,10 @@ namespace Tmpl8 {
 
 	// from HyTap on Discord: https://discord.com/channels/515453022097244160/913396868002762792/1079885233408716850
 	// slightly modified to be faster
-	Pixel AlphaBlend(Pixel dest, Pixel src, float alpha)
+	Pixel AlphaBlend(unsigned int dest, unsigned int src, float alpha)
 	{
 		if (alpha == 1.0f) return src;
+		if (alpha == 0.0f) return dest;
 		alpha = Clamp(alpha, 0.0f, 1.0f);
 		const unsigned int r1 = (dest & RedMask);
 		const unsigned int g1 = (dest & GreenMask);
@@ -484,7 +485,7 @@ namespace Tmpl8 {
 	 * \param c color of the circle
 	 * \param _alpha determines opacity, default is 1.0f
 	 */
-	void Surface::CircleFull( vec2 _pos, int _rMin, int _rMax, Pixel c, float _alpha ) const
+	void Surface::CircleFull( vec2 _pos, float _rMin, float _rMax, Pixel c, float _alpha ) const
 	{
 		const vec2 pos1 = _pos - static_cast<float>(_rMax); // top left bound
 		const vec2 pos2 = _pos + static_cast<float>(_rMax); // bottom right bound
@@ -519,7 +520,10 @@ namespace Tmpl8 {
 				const float shadowAlpha = 1 - (dist / _r);
 				if (dist <= _r)
 				{
-					Plot(x, y, 0x000000, shadowAlpha * _alpha);
+					if (x > 0 && x < m_Width && y > 0 && y < m_Height)
+					{
+						m_Buffer[x + y * m_Width] = AlphaBlend(m_Buffer[x + y * m_Width], 0x000000, shadowAlpha * _alpha);
+					}
 				}
 			}
 		}
@@ -537,7 +541,7 @@ namespace Tmpl8 {
 			{
 				const float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, { static_cast<float>(m_Width / 2), static_cast<float>(m_Height / 2) });
 				const float strength = (dist / (m_Width / 2));
-				Plot(x, y, 0x000000, strength * _strength);
+				m_Buffer[x + y * m_Width] = AlphaBlend(m_Buffer[x + y * m_Width], 0x000000, _strength * strength);
 			}
 		}
 	}

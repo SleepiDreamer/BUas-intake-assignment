@@ -14,11 +14,10 @@ namespace Tmpl8
 
 	void Enemy::render(Surface* _screen)
 	{
-		//sprite->DrawScaled(this->getTopLeft().x, this->getTopLeft().y, sprite->GetWidth() * scale, sprite->GetHeight() * scale, _screen, false); // draw centered around point
-		srand(id);
+		scale = 1.0f - whiteFlashTimer / 10.0f; // scale up when hit
 		int color = pastels[id % static_cast<int>(pastels.size())];
-		if (whiteFlashTimer > 0.0f) { color = static_cast<int>(AlphaBlend(color, 0xffffff, whiteFlashTimer)); }
-		screen->CircleShadow({ pos.x - 5, pos.y + 5 }, 27, 0.7f);
-		screen->CircleFull(pos, 0, 20, color);
+		color = static_cast<int>(AlphaBlend(color, 0xffffff, whiteFlashTimer));
+		screen->CircleShadow({ pos.x - 5, pos.y + 5 }, 27 * scale, 0.7f);
+		screen->CircleFull(pos, 0, 20 * scale, color);
 	}
 };

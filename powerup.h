@@ -38,7 +38,7 @@ namespace Tmpl8 {
 			hp = maxHp;
 		}
 
-		int bulletCollisionCheck(Bullet* _bullet); // 0 = no collision, 1 = collision, 2 = collision and destroy
+		int bulletCollisionCheck(const Bullet* _bullet); // 0 = no collision, 1 = collision, 2 = collision and destroy
 
 		void spawn();
 

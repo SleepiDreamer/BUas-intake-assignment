@@ -36,7 +36,7 @@ inline Pixel SubBlend( Pixel a_Color1, Pixel a_Color2 )
 	return static_cast<Pixel>(red + green + blue);
 }
 
-Pixel AlphaBlend(Pixel dest, Pixel src, float alpha);
+Pixel AlphaBlend(unsigned int dest, unsigned int src, float alpha);
 
 class Surface
 {
@@ -78,7 +78,7 @@ public:
 	void BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const;
 	void BarCentre(int y1, int y2, int width, Pixel c) const;
 	void Circle(vec2 _pos, int _r, Pixel _c) const;
-	void CircleFull(vec2 _pos, int _rMin, int _rMax, Pixel _c, float _alpha = 1.0f) const;
+	void CircleFull(vec2 _pos, float _rMin, float _rMax, Pixel _c, float _alpha = 1.0f) const;
 	void CircleShadow(vec2 _pos, float _r, float _alpha) const;
 	void Vignette(float _strength) const;
 	void DrawView(int x1, int y1, int x2, int y2, Pixel color) const; // OLD

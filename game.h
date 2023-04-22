@@ -65,8 +65,8 @@ namespace Tmpl8
 		bool mouseLeftDown = false;
 		bool iButtonPressed = false;
 
-		enum gameStates { MainMenu, Playing, Death, Instructions };
-		gameStates gameState = MainMenu;
+		enum gameStates { mainMenu, playing, death, instructions };
+		gameStates gameState = mainMenu;
 
 		int score = 0;
 		float scoreDisplay = static_cast<float>(score); // used for smooth score display

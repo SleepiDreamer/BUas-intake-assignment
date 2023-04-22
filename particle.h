@@ -27,7 +27,7 @@ namespace Tmpl8 {
 		int getType() const { return type; }
 		void setType(const int _type) { type = _type; }
 
-		Particle(vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite, const int _id) :
+		Particle(const vec2 _pos, Surface* _screen, std::shared_ptr<Sprite> _sprite, const int _id, const int _type) :
 			Entity(_pos, _screen, std::move(_sprite))
 		{
 			id = _id;
@@ -36,6 +36,7 @@ namespace Tmpl8 {
 			else size = { 5, 5 };
 			lifetime = 0.0f;
 			active = false;
+			type = _type;
 		}
 
 		void update(float _dt);

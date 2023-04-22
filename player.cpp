@@ -8,7 +8,6 @@ namespace Tmpl8
 	{
 		dashTimer = 0;
 		dashVel = _dir * 500;
-		std::cout << "dashed" << std::endl;
 	}
 
 	void Player::update(float _dt)
@@ -42,8 +41,6 @@ namespace Tmpl8
 			vel = reflectVector(vel, { 0.0f, -1.0f });
 			dashVel = reflectVector(dashVel, { 0.0f, -1.0f });
 		}
-
-		float angle = vec2ToAngle(vel);
 
 		dashTimer += _dt;
 		lastShotTimer += _dt;

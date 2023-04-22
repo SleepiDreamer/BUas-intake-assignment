@@ -9,7 +9,7 @@ namespace Tmpl8
     {
         for (int i = 0; i < size; i++)
         {
-            pool.emplace_back(new Particle({ 0, 0 }, _screen, _sprite, i));
+            pool.emplace_back(new Particle({ 0, 0 }, _screen, _sprite, i, 0));
         }
     }
 

@@ -13,7 +13,7 @@ float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
 unsigned int constexpr BG_COLOR = 0x363636;
 unsigned int constexpr MENU_BG_COLOR = 0x000000;
 
-// TODO: improve death screen
+// TODO: use enums for powerupType and particleType
 
 namespace Tmpl8
 {
@@ -57,7 +57,7 @@ namespace Tmpl8
 	// ----------------------------------------------------------- |
 	void Game::onStart()
 	{
-		gameState = Playing;
+		gameState = playing;
 		bulletPool.clear();
 		enemyPool.clear();
 		particlePool.clear();
@@ -99,7 +99,7 @@ namespace Tmpl8
 		// ________~~~~~~~~~________ |
 		// ---*--- Main Game ---*--- |
 		// --------~~~~~~~~~-------- |
-		if (gameState == Playing) {
+		if (gameState == playing) {
 			// ---*--- MOVEMENT ---*---
 			player->update(dt);
 			player->PointTowards(mousePos);
@@ -107,7 +107,7 @@ namespace Tmpl8
 			// ---*--- ENEMIES ---*---
 			enemyPool.update(player->getPos(), dt);
 			enemySpawnTimer += dt;
-			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.40f; // increase spawn rate over time
+			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.35f; // increase spawn rate over time
 			if (enemySpawnTimer > enemySpawnDelay)
 			{
 				spawnEnemy();
@@ -130,7 +130,7 @@ namespace Tmpl8
 			if (GetAsyncKeyState(0x4F))
 			{
 				gameOverTimer = 2.0f;
-				gameState = Death;
+				gameState = death;
 			}
 
 			// ---*--- BULLETS ---*---
@@ -257,7 +257,7 @@ namespace Tmpl8
 			case 1: screen->PrintCentreScaled("More damage", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 2: screen->PrintCentreScaled("Faster gun", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 3: screen->PrintCentreScaled("Invincibility", ScreenHeight - 60, 5, 5, 0xffffff); break;
-			case 4: screen->PrintCentreScaled("Slower time", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 4: screen->PrintCentreScaled("Slow-motion", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 5: screen->PrintCentreScaled("Healed", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 6: screen->PrintCentreScaled("Nuked", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			}
@@ -271,7 +271,7 @@ namespace Tmpl8
 			{
 				if (player->playerSubtractHealth()) // check if player is dead
 				{
-					gameState = Death;
+					gameState = death;
 					gameOverTimer = 2.0f;
 					writeToFile("data.txt", max(score, highScore));
 					if (score > highScore) isPersonalBest = true;
@@ -282,10 +282,10 @@ namespace Tmpl8
 		// --------~~~~~~~~~~~-------- |
 		// ---*--- MENU SCREEN ---*--- |
 		// --------~~~~~~~~~~~-------- |
-		else if (gameState == MainMenu)
+		else if (gameState == mainMenu)
 		{
 			screen->Clear(MENU_BG_COLOR);
-			screen->PrintCentreScaled("MR. BOUNCE", 40, 10, 10, 0xffffff);
+			screen->PrintCentreScaled("SIR BOUNCE", 40, 10, 10, 0xffffff);
 			screen->PrintCentreScaled(("High score: " + std::to_string(highScore)).c_str(), ScreenHeight - 50, 3, 3, 0xffffff);
 
 			// play button
@@ -298,7 +298,7 @@ namespace Tmpl8
 			vec4 instructionsButtonBox = { 545, 280, 730, 350 };
 			screen->Box({ instructionsButtonBox.x, instructionsButtonBox.y }, { instructionsButtonBox.z, instructionsButtonBox.w }, 0xffffff);
 			screen->PrintCentreScaled("HELP", 300, 6, 6, 0xffffff);
-			if (buttonPressed({ instructionsButtonBox.x, instructionsButtonBox.y }, { instructionsButtonBox.z, instructionsButtonBox.w })) gameState = Instructions;
+			if (buttonPressed({ instructionsButtonBox.x, instructionsButtonBox.y }, { instructionsButtonBox.z, instructionsButtonBox.w })) gameState = instructions;
 
 			// quit button
 			vec4 quitButtonBox = { 545, 380, 730, 450 };
@@ -310,7 +310,7 @@ namespace Tmpl8
 		// --------~~~~~~~~~~~~~~~~~~~-------- |
 		// ---*--- INSTRUCTIONS SCREEN ---*--- |
 		// --------~~~~~~~~~~~~~~~~~~~-------- |
-		else if (gameState == Instructions)
+		else if (gameState == instructions)
 		{
 			screen->Clear(MENU_BG_COLOR);
 			screen->PrintScaled("Instructions", 25, 25, 6, 6, 0xffffff);
@@ -318,18 +318,18 @@ namespace Tmpl8
 			screen->PrintScaled("You must shoot the enemies! They die after 2 hits", 25, 150, 3, 3, 0xffffff);
 			screen->PrintScaled("Powerups spawn randomly on the map. Shoot them to get a surprise!", 25, 200, 3, 3, 0xffffff);
 			screen->PrintScaled("Good luck!", 25, 300, 3, 3, 0xffffff);
-			screen->PrintScaled("Try to beat my top score of 11760!", 25, 250, 3, 3, 0xffffff);
+			screen->PrintScaled("Try to beat my top score of 14120!", 25, 250, 3, 3, 0xffffff);
 
 			// menu button
 			vec4 menuButtonBox = { 1045, 25, 1230, 95 };
 			screen->Box({ menuButtonBox.x, menuButtonBox.y }, { menuButtonBox.z, menuButtonBox.w }, 0xffffff);
 			screen->PrintScaled("MENU", 1070, 45, 6, 6, 0xffffff);
-			if (buttonPressed({ menuButtonBox.x, menuButtonBox.y }, { menuButtonBox.z, menuButtonBox.w })) { gameState = MainMenu; screen->Clear(0); }
+			if (buttonPressed({ menuButtonBox.x, menuButtonBox.y }, { menuButtonBox.z, menuButtonBox.w })) { gameState = mainMenu; screen->Clear(0); }
 		}
 		// --------~~~~~~~~~~~~~~~~-------- |
 		// ---*--- GAME OVER SCREEN ---*--- |
 		// --------~~~~~~~~~~~~~~~~-------- |
-		else if (gameState == Death)
+		else if (gameState == death)
 		{
 			gameOverTimer -= dt;
 			if (gameOverTimer >= 0.0f)
@@ -343,7 +343,7 @@ namespace Tmpl8
 			else
 			{
 				screen->Clear(MENU_BG_COLOR);
-				gameState = MainMenu;
+				gameState = mainMenu;
 			}
 		}
 		frame++;
