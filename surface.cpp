@@ -14,29 +14,18 @@ namespace Tmpl8 {
 	char Surface::s_Font[51][5][6];	
 	bool Surface::fontInitialized = false;
 
-	// from HyTap on Discord: https://discord.com/channels/515453022097244160/913396868002762792/1079885233408716850
-	// slightly modified to be faster
-	Pixel AlphaBlend(unsigned int dest, unsigned int src, float alpha)
+	// modified version of https://gist.github.com/XProger/96253e93baccfbf338de
+	Pixel AlphaBlend(int color1, int color2, float alpha)
 	{
-		if (alpha == 1.0f) return src;
-		if (alpha == 0.0f) return dest;
-		alpha = Clamp(alpha, 0.0f, 1.0f);
-		const unsigned int r1 = (dest & RedMask);
-		const unsigned int g1 = (dest & GreenMask);
-		const unsigned int b1 = (dest & BlueMask);
 
-		const unsigned int r2 = (src & RedMask);
-		const unsigned int g2 = (src & GreenMask);
-		const unsigned int b2 = (src & BlueMask);
-
-		const unsigned int r = alpha * r2 + (1.0f - alpha) * r1;
-		const unsigned int g = alpha * g2 + (1.0f - alpha) * g1;
-		const unsigned int b = alpha * b2 + (1.0f - alpha) * b1;
-
-		const unsigned r3 = (r & RedMask) | (RedMask * (r >> 24));
-		const unsigned g3 = (g & GreenMask) | (GreenMask * (g >> 16));
-		const unsigned b3 = (b & BlueMask) | (BlueMask * (b >> 8));
-		return (r3 + g3 + b3);
+		if (alpha <= 0.0f) return color1;
+		if (alpha >= 1.0f) return color2;
+		uint8_t newAlpha = alpha * 255;
+		uint32_t rb = color1 & 0xff00ff;
+		uint32_t g = color1 & 0x00ff00;
+		rb += ((color2 & 0xff00ff) - rb) * newAlpha >> 8;
+		g += ((color2 & 0x00ff00) - g) * newAlpha >> 8;
+		return (rb & 0xff00ff) | (g & 0xff00);
 	}
 
 	// -----------------------------------------------------------

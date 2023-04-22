@@ -254,8 +254,8 @@ namespace Tmpl8
 			}
 			switch (powerupType)
 			{
-			case 1: screen->PrintCentreScaled("More damage", ScreenHeight - 60, 5, 5, 0xffffff); break;
-			case 2: screen->PrintCentreScaled("Faster gun", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 1: screen->PrintCentreScaled("Damage boost", ScreenHeight - 60, 5, 5, 0xffffff); break;
+			case 2: screen->PrintCentreScaled("Faster shooting", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 3: screen->PrintCentreScaled("Invincibility", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 4: screen->PrintCentreScaled("Slow-motion", ScreenHeight - 60, 5, 5, 0xffffff); break;
 			case 5: screen->PrintCentreScaled("Healed", ScreenHeight - 60, 5, 5, 0xffffff); break;
@@ -317,8 +317,14 @@ namespace Tmpl8
 			screen->PrintScaled("You move automatically!", 25, 100, 3, 3, 0xffffff);
 			screen->PrintScaled("You must shoot the enemies! They die after 2 hits", 25, 150, 3, 3, 0xffffff);
 			screen->PrintScaled("Powerups spawn randomly on the map. Shoot them to get a surprise!", 25, 200, 3, 3, 0xffffff);
-			screen->PrintScaled("Good luck!", 25, 300, 3, 3, 0xffffff);
-			screen->PrintScaled("Try to beat my top score of 14120!", 25, 250, 3, 3, 0xffffff);
+			screen->PrintScaled("-Damage Boost: multiplies all damage dealt by 3x", 25, 250, 3, 3, 0xffffff);
+			screen->PrintScaled("-Faster shooting: multiplies your fire rate by 2x", 25, 300, 3, 3, 0xffffff);
+			screen->PrintScaled("-Invincibility: prevents you from getting hit", 25, 350, 3, 3, 0xffffff);
+			screen->PrintScaled("-Slow-motion: time is twice as slow", 25, 400, 3, 3, 0xffffff);
+			screen->PrintScaled("-Heal: heals you for an extra health point", 25, 450, 3, 3, 0xffffff);
+			screen->PrintScaled("-Nuke: kills all enemies on screen", 25, 500, 3, 3, 0xffffff);
+			screen->PrintScaled("Try to beat my top score of 23070!", 25, 600, 3, 3, 0xffffff);
+			screen->PrintScaled("Good luck!", 25, 650, 3, 3, 0xffffff);
 
 			// menu button
 			vec4 menuButtonBox = { 1045, 25, 1230, 95 };

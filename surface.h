@@ -36,7 +36,7 @@ inline Pixel SubBlend( Pixel a_Color1, Pixel a_Color2 )
 	return static_cast<Pixel>(red + green + blue);
 }
 
-Pixel AlphaBlend(unsigned int dest, unsigned int src, float alpha);
+Pixel AlphaBlend(int color1, int color2, float alpha);
 
 class Surface
 {
