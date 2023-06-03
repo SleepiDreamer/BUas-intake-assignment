@@ -2,7 +2,7 @@
 // IGAD/BUAS(NHTV)/UU - Jacco Bikker - 2006-2020
 
 #pragma once
-#pragma warning disable warning-list
+//#pragma warning disable
 #include "template.h"
 
 namespace Tmpl8 {
@@ -74,6 +74,7 @@ public:
 	void BoxThick(int x1, int y1, int x2, int y2, int width, Pixel c) const;
 	void BoxThick(vec2 pos1, vec2 pos2, int width, Pixel c) const;
 	void Bar( int x1, int y1, int x2, int y2, Pixel color, float alpha = 1.0f ) const;
+	void Bar( float x1, float y1, float x2, float y2, Pixel color, float alpha = 1.0f ) const;
 	void Bar(vec2 pos1, vec2 pos2, Pixel color, float alpha = 1.0f ) const;
 	void BarShadow(vec2 _pos1, vec2 _pos2, float _r, float _alpha) const;
 	void BarCentre(int y1, int y2, int width, Pixel c) const;
@@ -81,6 +82,7 @@ public:
 	void CircleFull(vec2 _pos, float _rMin, float _rMax, Pixel _c, float _alpha = 1.0f) const;
 	void CircleShadow(vec2 _pos, float _r, float _alpha) const;
 	void Vignette(float _strength) const;
+	void VignetteFast(float _strength) const;
 	void DrawView(int x1, int y1, int x2, int y2, Pixel color) const; // OLD
 	bool CheckVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD
 	bool CheckFullVisibility(float x1, float y1, float x2, float y2, float bx1, float by1, float bx2, float by2); // OLD

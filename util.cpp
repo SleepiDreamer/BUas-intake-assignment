@@ -19,10 +19,26 @@ namespace Tmpl8
 		return static_cast<int>(number / pow(10, n)) % 10;
 	}
 
-	// returns the distance between two points
+	// returns the distance between two points in 2D space
 	float distanceBetween(const float x1, const float y1, const float x2, const float y2)
 	{
 		return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+	}
+
+	// returns the distance between two points in 2D space, but squared
+	float distanceBetweenSquared(const vec2 a, const vec2 b)
+	{
+		const float dx = b.x - a.x;
+		const float dy = b.y - a.y;
+		return dx * dx + dy * dy;
+	}
+
+	// returns the distance between two points in 2D space, but squared, less precision
+	int distanceBetweenSquaredFast(int x1, int y1, int x2, int y2)
+	{
+		const int dx = x2 - x1;
+		const int dy = y2 - y1;
+		return dx * dx + dy * dy;
 	}
 
 	// returns the direction (in radians) someone at p1 should point towards if it were to look at p2
@@ -137,19 +153,19 @@ namespace Tmpl8
 	float distanceToRect(double x, double y, double x_min, double y_min, double x_max, double y_max)
 	{
 		if (x < x_min) {
-			if (y < y_min) return HYPOT(x_min - x, y_min - y);
-			if (y <= y_max) return x_min - x;
-			return HYPOT(x_min - x, y_max - y);
+			if (y < y_min) return static_cast<float>(HYPOT(x_min - x, y_min - y));
+			if (y <= y_max) return static_cast<float>(x_min - x);
+			return static_cast<float>(HYPOT(x_min - x, y_max - y));
 		}
 		else if (x <= x_max) {
-			if (y < y_min) return y_min - y;
+			if (y < y_min) return static_cast<float>(y_min - y);
 			if (y <= y_max) return 0;
-			return y - y_max;
+			return static_cast<float>(y - y_max);
 		}
 		else {
-			if (y < y_min) return HYPOT(x_max - x, y_min - y);
-			if (y <= y_max) return x - x_max;
-			return HYPOT(x_max - x, y_max - y);
+			if (y < y_min) return static_cast<float>(HYPOT(x_max - x, y_min - y));
+			if (y <= y_max) return static_cast<float>(x - x_max);
+			return static_cast<float>(HYPOT(x_max - x, y_max - y));
 		}
 	}
 

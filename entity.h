@@ -49,7 +49,7 @@ namespace Tmpl8 {
 
 		virtual void render() const
 		{
-			sprite->Draw(screen, pos.x - (size.x / 2), pos.y - (size.y / 2));
+			sprite->Draw(screen, static_cast<int>(pos.x - size.x / 2), static_cast<int>(pos.y - (size.y / 2)));
 		}
 
 		/**

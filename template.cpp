@@ -234,7 +234,7 @@ bool createFBtexture()
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );
 	glBindTexture( GL_TEXTURE_2D, framebufferTexID[0] );
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, fbPBO[0] );
-	framedata = (unsigned char*)glMapBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB );
+	framedata = (unsigned char*)glMapBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, GL_READ_WRITE_ARB );
 	if (!framedata) return false;
 	memset( framedata, 0, ScreenWidth * ScreenHeight * 4 );
 	return (glGetError() == 0);
@@ -315,7 +315,8 @@ int main( int argc, char **argv )
 #endif
 	SDL_GLContext glContext = SDL_GL_CreateContext( window);
 	init();
-	ShowCursor( false );
+	// limit framerate
+	SDL_GL_SetSwapInterval( 1 );
 #else
 #ifdef FULLSCREEN
 	window = SDL_CreateWindow(TemplateVersion, 100, 100, ScreenWidth, ScreenHeight, SDL_WINDOW_FULLSCREEN_DESKTOP );

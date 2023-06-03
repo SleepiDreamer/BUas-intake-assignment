@@ -25,7 +25,6 @@
     <ClCompile Include="bulletManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="poolManager.cpp" />
     <ClCompile Include="enemy.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -64,16 +63,12 @@
     <ClInclude Include="bullet.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="game.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="bulletManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="poolManager.h" />
     <ClInclude Include="enemyManager.h">
       <Filter>Headers</Filter>
     </ClInclude>

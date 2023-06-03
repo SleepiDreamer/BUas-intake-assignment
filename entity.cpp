@@ -6,7 +6,7 @@ namespace Tmpl8
 	{
 		const float dx = _pos.x - pos.x;
 		const float dy = _pos.y - pos.y;
-		const float angle = atan2(dy, dx);
+		const float angle = static_cast<float>(atan2(dy, dx));
 		dir = { static_cast<float>(cos(angle)), static_cast<float>(sin(angle)) };
 	}
 
@@ -14,7 +14,7 @@ namespace Tmpl8
 	{
 		const float dx = _pos.x - pos.x;
 		const float dy = _pos.y - pos.y;
-		const float angle = atan2(dy, dx);
+		const float angle = static_cast<float>(atan2(dy, dx));
 		vel = { static_cast<float>(cos(angle)), static_cast<float>(sin(angle)) };
 		vel *= _speed;
 	}

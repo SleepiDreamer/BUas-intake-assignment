@@ -10,7 +10,7 @@
 
 float constexpr POWERUP_DURATION = 6.0f;
 float constexpr POWERUP_MESSAGE_DURATION = 2.0f;
-unsigned int constexpr BG_COLOR = 0x363636;
+unsigned int constexpr BG_COLOR = 0x464646;
 unsigned int constexpr MENU_BG_COLOR = 0x000000;
 
 // TODO: use enums for powerupType and particleType
@@ -107,7 +107,7 @@ namespace Tmpl8
 			// ---*--- ENEMIES ---*---
 			enemyPool.update(player->getPos(), dt);
 			enemySpawnTimer += dt;
-			enemySpawnDelay = 15.0f / (time * 15.0f) + 0.35f; // increase spawn rate over time
+			enemySpawnDelay = 15.0f / (time * 5.0f) + 0.35f; // increase spawn rate over time
 			if (enemySpawnTimer > enemySpawnDelay)
 			{
 				spawnEnemy();
@@ -240,7 +240,7 @@ namespace Tmpl8
 			enemyPool.render(screen);
 
 			player->render();
-			screen->Vignette(0.15f);
+			screen->VignetteFast(0.25f);
 			scoreDisplay = (static_cast<float>(score) * 0.1f + scoreDisplay + 0.1f) / 1.1f;
 			screen->PrintScaled(("Score: " + std::to_string(static_cast<int>(scoreDisplay))).c_str(), 10, 10, 5, 5, 0xdddddd);
 			for (int i = 0; i < player->getMaxHp(); i++)
@@ -315,15 +315,15 @@ namespace Tmpl8
 			screen->Clear(MENU_BG_COLOR);
 			screen->PrintScaled("Instructions", 25, 25, 6, 6, 0xffffff);
 			screen->PrintScaled("You move automatically!", 25, 100, 3, 3, 0xffffff);
-			screen->PrintScaled("You must shoot the enemies! They die after 2 hits", 25, 150, 3, 3, 0xffffff);
+			screen->PrintScaled("You must shoot the enemies 3 times to kill them.", 25, 150, 3, 3, 0xffffff);
 			screen->PrintScaled("Powerups spawn randomly on the map. Shoot them to get a surprise!", 25, 200, 3, 3, 0xffffff);
-			screen->PrintScaled("-Damage Boost: multiplies all damage dealt by 3x", 25, 250, 3, 3, 0xffffff);
+			screen->PrintScaled("-Damage Boost: multiplies all damage dealt by 3x (insta kill!)", 25, 250, 3, 3, 0xffffff);
 			screen->PrintScaled("-Faster shooting: multiplies your fire rate by 2x", 25, 300, 3, 3, 0xffffff);
 			screen->PrintScaled("-Invincibility: prevents you from getting hit", 25, 350, 3, 3, 0xffffff);
 			screen->PrintScaled("-Slow-motion: time is twice as slow", 25, 400, 3, 3, 0xffffff);
 			screen->PrintScaled("-Heal: heals you for an extra health point", 25, 450, 3, 3, 0xffffff);
 			screen->PrintScaled("-Nuke: kills all enemies on screen", 25, 500, 3, 3, 0xffffff);
-			screen->PrintScaled("Try to beat my top score of 23070!", 25, 600, 3, 3, 0xffffff);
+			screen->PrintScaled("Try to beat my personal top score of 23070!", 25, 600, 3, 3, 0xffffff);
 			screen->PrintScaled("Good luck!", 25, 650, 3, 3, 0xffffff);
 
 			// menu button

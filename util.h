@@ -12,13 +12,16 @@ namespace Tmpl8
 		return distanceBetween(pos1.x, pos1.y, pos2.x, pos2.y);
 	}
 
+	float distanceBetweenSquared(const vec2 a, const vec2 b);
+
+	int distanceBetweenSquaredFast(int x1, int y1, int x2, int y2);
+
 	/**
 	 * \brief returns the direction (in radians) someone at p1 should point towards if it were to look at p2
 	 * \param x1  your x
 	 * \param y1  your y
 	 * \param x2  target x
 	 * \param y2  target y
-	 * \return 
 	 */
 	float RotationBetweenPoints(const float x1, const float y1, const float x2, const float y2);
 	inline float RotationBetweenPoints(const vec2& pos1, const vec2& pos2)

@@ -14,18 +14,20 @@ namespace Tmpl8 {
 	char Surface::s_Font[51][5][6];	
 	bool Surface::fontInitialized = false;
 
-	// modified version of https://gist.github.com/XProger/96253e93baccfbf338de
+	// very fast alpha blend
 	Pixel AlphaBlend(int color1, int color2, float alpha)
 	{
-
 		if (alpha <= 0.0f) return color1;
 		if (alpha >= 1.0f) return color2;
-		uint8_t newAlpha = alpha * 255;
-		uint32_t rb = color1 & 0xff00ff;
-		uint32_t g = color1 & 0x00ff00;
-		rb += ((color2 & 0xff00ff) - rb) * newAlpha >> 8;
-		g += ((color2 & 0x00ff00) - g) * newAlpha >> 8;
-		return (rb & 0xff00ff) | (g & 0xff00);
+		const int a = static_cast<int>(alpha * 255);
+		const int a1 = 255 - a;
+		const int rb1 = color1 & 0xff00ff;
+		const int g1 = color1 & 0x00ff00;
+		const int rb2 = color2 & 0xff00ff;
+		const int g2 = color2 & 0x00ff00;
+		const int rb = ((rb1 * a1 + rb2 * a) >> 8) & 0xff00ff;
+		const int g = ((g1 * a1 + g2 * a) >> 8) & 0x00ff00;
+		return rb | g;
 	}
 
 	// -----------------------------------------------------------
@@ -393,6 +395,11 @@ namespace Tmpl8 {
 				
 	}
 
+	void Surface::Bar(float x1, float y1, float x2, float y2, Pixel color, float alpha) const
+	{
+		Bar(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2), color, alpha);
+	}
+
 	/**
 	 * \brief Draws a filled-in rectangle
 	 * \param pos1 top left corner of the bar
@@ -416,9 +423,9 @@ namespace Tmpl8 {
 	{
 		const vec2 pos1 = _pos1 - _r; // top left bound
 		const vec2 pos2 = _pos2 + _r; // bottom right bound
-		for (int x = pos1.x; x < pos2.x; x++)
+		for (int x = static_cast<int>(pos1.x); x < pos2.x; x++)
 		{
-			for (int y = pos1.y; y < pos2.y; y++)
+			for (int y = static_cast<int>(pos1.y); y < pos2.y; y++)
 			{
 				const float dist = distanceToRect({static_cast<float>(x), static_cast<float>(y)}, _pos1, _pos2);
 				const float shadowAlpha = 1 - (dist / _r);
@@ -478,9 +485,9 @@ namespace Tmpl8 {
 	{
 		const vec2 pos1 = _pos - static_cast<float>(_rMax); // top left bound
 		const vec2 pos2 = _pos + static_cast<float>(_rMax); // bottom right bound
-		for (int x = pos1.x; x < pos2.x; x++)
+		for (int x = static_cast<int>(pos1.x); x < pos2.x; x++)
 		{
-			for (int y = pos1.y; y < pos2.y; y++)
+			for (int y = static_cast<int>(pos1.y); y < pos2.y; y++)
 			{
 				const float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, _pos);
 				if (dist <= _rMax && dist >= _rMin)
@@ -501,9 +508,9 @@ namespace Tmpl8 {
 	{
 		const vec2 pos1 = _pos - _r; // top left bound
 		const vec2 pos2 = _pos + _r; // bottom right bound
-		for (int x = pos1.x; x < pos2.x; x++)
+		for (int x = static_cast<int>(pos1.x); x < pos2.x; x++)
 		{
-			for (int y = pos1.y; y < pos2.y; y++)
+			for (int y = static_cast<int>(pos1.y); y < pos2.y; y++)
 			{
 				const float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, _pos);
 				const float shadowAlpha = 1 - (dist / _r);
@@ -524,12 +531,28 @@ namespace Tmpl8 {
 	 */
 	void Surface::Vignette(float _strength) const
 	{
-		for (int x = 0; x < m_Width; x++)
+		for (int y = 0; y < m_Height; y++)
 		{
-			for (int y = 0; y < m_Height; y++)
+			for (int x = 0; x < m_Width; x++)
 			{
-				const float dist = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, { static_cast<float>(m_Width / 2), static_cast<float>(m_Height / 2) });
-				const float strength = (dist / (m_Width / 2));
+				const float distance = distanceBetween({ static_cast<float>(x), static_cast<float>(y) }, { static_cast<float>(m_Width / 2), static_cast<float>(m_Height / 2) });
+				const float strength = (distance / (m_Width / 2));
+				m_Buffer[x + y * m_Width] = AlphaBlend(m_Buffer[x + y * m_Width], 0x000000, _strength * strength);
+			}
+		}
+	}
+
+	void Surface::VignetteFast(float _strength) const
+	{
+		const int centerX = m_Width / 2;
+		const int centerY = m_Height / 2;
+		const int radiusSquared = centerX * centerX + centerY * centerY;
+		for (int y = 0; y < m_Height; y++)
+		{
+			for (int x = 0; x < m_Width; x++)
+			{
+				const int distanceSquared = distanceBetweenSquaredFast(x, y, centerX, centerY);
+				const float strength = static_cast<float>(distanceSquared) / static_cast<float>(radiusSquared);
 				m_Buffer[x + y * m_Width] = AlphaBlend(m_Buffer[x + y * m_Width], 0x000000, _strength * strength);
 			}
 		}
